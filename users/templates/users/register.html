@@ -9,20 +9,20 @@
 
         <fieldset class="form-group">
             <legend class="border-bottom mb-4">
-                Log In
+                Create an account
             </legend>
 
             {{ form | crispy }}
         </fieldset>
 
         <div class="form-group">
-            <button class="btn btn-outline-info" type="submit">Login</button>
+            <button class="btn btn-outline-info" type="submit">Register</button>
         </div>
     </form>
 
     <div class="border-top pt-3">
         <small class="text-muted">
-            Don't have an account? <a href="{% url 'users-register' %}" class="ml-2">Register here</a> 
+            Already have an account?<a href="{% url 'users-login' %}" class="ml-2">Login</a> 
         </small>
     </div>
 </div>

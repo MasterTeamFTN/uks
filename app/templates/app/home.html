@@ -8,7 +8,7 @@
 {% else %}
     <h1>Welcome to UKS Lab</h1>
     <p>A clone of Github/Gitlab</p>
-    <span>Don't have an account? </span><a class="btn btn-outline-secondary" href="#">Register here</a>
+    <span>Don't have an account? </span><a href="{% url 'users-register' %}">Register here</a>
 {% endif %}
 
 {% endblock content %}
