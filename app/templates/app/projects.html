@@ -1,0 +1,21 @@
+{% extends "app/base.html" %}
+
+{% block content %}
+
+    <h1>Projects page</h1>
+{% for project in projects %}
+
+    <article class="media content-section">
+        <div class="media-body">
+            <div class="article-metadata">
+                <a class="mr-2" href="#">{{ project.name }}</a>
+                <small class="text-muted">Last updated on {{ project.updated_on|date:"F d, Y"}}</small>
+            </div>
+            <h2><a class="article-title" href="{% url 'project-detail' project.id%}">{{ project.name }}</a></h2>
+            <p class="article-content">{{ project.description }}</p>
+        </div>
+    </article>
+
+
+{% endfor %}
+{% endblock content %}
