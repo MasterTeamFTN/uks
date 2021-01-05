@@ -58,9 +58,9 @@
           <!-- Main content for authenticated user -->
           {% block content %} {% endblock %}
         </div>
-        <div class="col-md-3">
+        {% comment %} <div class="col-md-3">
           <div class="content-section">
-            <h3>Our Sidebar</h3>
+            <h3>Menu</h3>
             <p class='text-muted'>You can put any information here you'd like.
               <ul class="list-group">
                 <li class="list-group-item list-group-item-light">Latest Posts</li>
@@ -70,7 +70,68 @@
               </ul>
             </p>
           </div>
+        </div> {% endcomment %}
+        {% if user.is_authenticated %}
+        <div id="sidebar-container" class="sidebar-expanded d-none d-md-block col-2">
+          <ul class="list-group sticky-top sticky-offset">
+              <!-- Separator with title -->
+              <li class="list-group-item sidebar-separator-title text-muted d-flex align-items-center menu-collapsed">
+                  <small style="color: white;">Menu</small>
+              </li>
+              <!-- /END Separator -->
+
+              <!-- Menu with submenu -->
+              <a href="#submenu1" data-toggle="collapse" aria-expanded="false" class="bg-dark list-group-item list-group-item-action flex-column align-items-start">
+                  <div class="d-flex w-100 justify-content-start align-items-center">
+                      <span class="fa fa-dashboard fa-fw mr-3"></span>
+                      <span class="menu-collapsed"><strong>Dashboard</strong></span>
+                  </div>
+              </a>
+
+              <!-- Submenu content -->
+              <div id="submenu1" class="collapse sidebar-submenu">
+                  <a href="#" class="list-group-item list-group-item-action bg-dark text-white">
+                      <span class="menu-collapsed">Organisations</span>
+                  </a>
+                  <a href="{% url 'app-projects'%}" class="list-group-item list-group-item-action bg-dark text-white">
+                      <span class="menu-collapsed">Projects</span>
+                  </a>
+                  <a href="#" class="list-group-item list-group-item-action bg-dark text-white">
+                      <span class="menu-collapsed">Other</span>
+                  </a>
+              </div>
+              <a href="#submenu2" data-toggle="collapse" aria-expanded="false" class="bg-dark list-group-item list-group-item-action flex-column align-items-start">
+                  <div class="d-flex w-100 justify-content-start align-items-center">
+                      <span class="fa fa-user fa-fw mr-3"></span>
+                      <span class="menu-collapsed"><strong>Profile</strong></span>
+                  </div>
+              </a>
+
+              <!-- Submenu content -->
+              <div id="submenu2" class="collapse sidebar-submenu">
+                  <a href="#" class="list-group-item list-group-item-action bg-dark text-white">
+                      <span class="menu-collapsed">Settings</span>
+                  </a>
+              </div>
+              <a href="#" class="bg-dark list-group-item list-group-item-action">
+                  <div class="d-flex w-100 justify-content-start align-items-center">
+                      <span class="fa fa-tasks fa-fw mr-3"></span>
+                      <span class="menu-collapsed"><strong>Tasks</strong></span>
+                  </div>
+              </a>
+
+              <!-- Separator without title -->
+              <li class="list-group-item sidebar-separator menu-collapsed"></li>
+              <!-- /END Separator -->
+              <a href="#" class="bg-dark list-group-item list-group-item-action">
+                  <div class="d-flex w-100 justify-content-start align-items-center">
+                      <span class="fa fa-question fa-fw mr-3"></span>
+                      <span class="menu-collapsed"><strong>Help</strong></span>
+                  </div>
+              </a>
+          </ul>
         </div>
+      {% endif %}
       </div>
     </main>
 
