@@ -1,17 +1,16 @@
 from django.contrib import admin
 from django.urls import path
-from .views import (
-    ProjectDetailView,
-    ProjectDeleteView,
-    ProjectCreateView
-)
 from . import views
 
 urlpatterns = [
     path('', views.home, name='app-home'),
     path('about/', views.about, name='app-about'),
     path('projects/', views.projects, name='app-projects'),
-    path('project-detail/<pk>', ProjectDetailView.as_view(), name='project-detail'),
-    path('project/<pk>/delete', ProjectDeleteView.as_view(), name='project-delete'),
-    path('project/new/', ProjectCreateView.as_view(), name='project-create'),
+    path('project/<pk>/', views.ProjectDetailView.as_view(), name='project-detail'),
+    path('project/<pk>/delete', views.ProjectDeleteView.as_view(), name='project-delete'),
+    path('project/new/', views.ProjectCreateView.as_view(), name='project-create'),
+    path('project/<project_pk>/wiki/', views.wikis_list_view, name='wiki-list'),
+    path('project/<project_pk>/wiki/new/', views.WikiCreateView.as_view(), name='wiki-create'),
+    path('project/<project_pk>/wiki/<pk>/', views.WikiDetailView.as_view(), name='wiki-detail'),
+    path('project/<project_pk>/wiki/<pk>/delete/', views.WikiDeleteView.as_view(), name='wiki-delete'),
 ]

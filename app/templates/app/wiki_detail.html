@@ -1,0 +1,11 @@
+{% extends "app/base.html" %}
+
+{% block content %}
+
+    <h1>Wiki - {{ object.title }}</h1>
+    <small class="text-muted">Created on {{ object.created_on|date:"F d, Y"}}</small>
+
+    <a href="#" class="btn btn-primary btn-sm">Edit</a>
+    <a href="{% url 'wiki-delete' object.project.id object.id %}" class="btn btn-danger btn-sm">Delete</a>
+
+{% endblock content %}
