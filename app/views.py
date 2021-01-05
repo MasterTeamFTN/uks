@@ -60,7 +60,7 @@ def wikis_list_view(request, project_pk):
      
     context = {
         'wikis': Wiki.objects.filter(project=project),
-        'project_id': project_pk
+        'project': project
     }
 
     return render(request, 'app/wiki_list.html', context)
@@ -70,7 +70,7 @@ class WikiDetailView(DetailView):
 
 class WikiCreateView(LoginRequiredMixin, CreateView):
     model = Wiki
-    fields = ['title']
+    fields = ['title', 'text']
 
     def form_valid(self, form):
         project_id = self.kwargs.get('project_pk')

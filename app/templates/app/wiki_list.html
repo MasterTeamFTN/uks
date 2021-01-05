@@ -2,25 +2,29 @@
 
 {% block content %}
 
-    <h1>Wiki</h1>
-
-    <a href="{% url 'wiki-create' project_id %}" class="btn btn-primary btn-sm mb-2">New</a>
+    <div style="display: flex;">
+        <h4>
+            <a href="{% url 'project-detail' project.id %}">{{ project.name }}</a>
+            - Wikis
+        </h4>
+    
+        <a href="{% url 'wiki-create' project.id %}" class="btn btn-primary mb-2" style="margin-left: auto;">New</a>
+    </div>
 
 {% for wiki in wikis %}
     <article class="media content-section">
-        <div class="media-body">
+        <div class="media-body" style="display: flex;">
             <div>
                 <a class="mr-2" href="{% url 'wiki-detail' wiki.project.id wiki.id %}">{{ wiki.title }}</a>
                 <small class="text-muted">Created on {{ wiki.created_on|date:"F d, Y"}}</small>
             </div>
             
-            <div>
+            <div style="margin-left: auto;">
                 <a href="#" class="btn btn-primary btn-sm">Edit</a>
                 <a href="{% url 'wiki-delete' wiki.project.id wiki.id %}" class="btn btn-danger btn-sm">Delete</a>
             </div>
         </div>
     </article>
-
 {% empty %}
     <p>
         Wikis provide a place in your repository to lay out the roadmap of your project, 
@@ -28,7 +32,5 @@
     </p>
     <a href="#">Create your first wiki page</a>
 {% endfor %}
-
-
 
 {% endblock content %}
