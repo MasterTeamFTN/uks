@@ -8,7 +8,7 @@
             - Wikis
         </h4>
     
-        <a href="{% url 'wiki-create' project.id %}" class="btn btn-primary mb-2" style="margin-left: auto;">New</a>
+        <a href="{% url 'wiki-create' project.pk %}" class="btn btn-primary mb-2" style="margin-left: auto;">New</a>
     </div>
 
 {% for wiki in wikis %}
@@ -20,7 +20,8 @@
             </div>
             
             <div style="margin-left: auto;">
-                <a href="#" class="btn btn-primary btn-sm">Edit</a>
+                <a href="{% url 'wiki-history' wiki.project.id wiki.id %}" class="btn btn-secondary btn-sm">History</a>
+                <a href="{% url 'wiki-update' wiki.project.id wiki.id %}" class="btn btn-primary btn-sm">Update</a>
                 <a href="{% url 'wiki-delete' wiki.project.id wiki.id %}" class="btn btn-danger btn-sm">Delete</a>
             </div>
         </div>
@@ -30,7 +31,7 @@
         Wikis provide a place in your repository to lay out the roadmap of your project, 
         show the current status, and document software better, together.
     </p>
-    <a href="#">Create your first wiki page</a>
+    <a href="{% url 'wiki-create' project.pk %}">Create your first wiki page</a>
 {% endfor %}
 
 {% endblock content %}

@@ -1,6 +1,6 @@
 from django.shortcuts import render
 from django.urls import reverse_lazy
-from app.models import Project, Wiki
+from app.models import Project, Wiki, WikiVersion
 from django.views.generic import ListView, DetailView, CreateView, UpdateView, DeleteView
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 
@@ -25,13 +25,13 @@ def projects(request):
 class ProjectDetailView(DetailView):
     model = Project 
 
-class ProjectDeleteView(LoginRequiredMixin, DeleteView):
+class ProjectDeleteView(LoginRequiredMixin, UserPassesTestMixin, DeleteView):
     model = Project 
     success_url = '/'
 
     def test_func(self):
         project = self.get_object()
-        if self.request.user.id in project.contributors.all():
+        if self.request.user in project.contributors.all():
             return True
         return False
 
@@ -44,16 +44,6 @@ class ProjectCreateView(LoginRequiredMixin, CreateView):
         form.instance.author = self.request.user
         return super().form_valid(form)
 
-
-class WikiListView(ListView):
-    model = Wiki
-    context_object_name = 'wikis'
-    ordering = ['created_on']
-
-    def get_queryset(self):
-        project_id = self.kwargs.get('project_pk')
-        project = Project.objects.get(pk=project_id)
-        return Wiki.objects.filter(project=project)
 
 def wikis_list_view(request, project_pk):
     project = Project.objects.get(pk=project_pk)
@@ -68,7 +58,7 @@ def wikis_list_view(request, project_pk):
 class WikiDetailView(DetailView):
     model = Wiki
 
-class WikiCreateView(LoginRequiredMixin, CreateView):
+class WikiCreateView(LoginRequiredMixin, UserPassesTestMixin, CreateView):
     model = Wiki
     fields = ['title', 'text']
 
@@ -77,8 +67,12 @@ class WikiCreateView(LoginRequiredMixin, CreateView):
         form.instance.project = Project.objects.get(pk=project_id)
         return super().form_valid(form)
 
+    def test_func(self):
+        project_id = self.kwargs.get('project_pk')
+        project = Project.objects.get(pk=project_id)
+        return self.request.user in project.contributors.all()
 
-class WikiDeleteView(LoginRequiredMixin, DeleteView):
+class WikiDeleteView(LoginRequiredMixin, UserPassesTestMixin, DeleteView):
     model = Wiki 
 
     def get_success_url(self):
@@ -87,4 +81,23 @@ class WikiDeleteView(LoginRequiredMixin, DeleteView):
 
     def test_func(self):
         wiki = self.get_object()
-        return self.request.user.id in wiki.project.contributors.all()
+        return self.request.user in wiki.project.contributors.all()
+
+class WikiUpdateView(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
+    model = Wiki
+    fields = ['title', 'text']
+
+    def test_func(self):
+        wiki = self.get_object()
+        return self.request.user in wiki.project.contributors.all()
+
+
+def wiki_versions_list_view(request, project_pk, pk):
+    wiki = Wiki.objects.get(pk=pk)
+
+    context = {
+        'wiki': wiki,
+        'versions': WikiVersion.objects.filter(wiki=wiki).order_by('-updated_on')
+    }
+
+    return render(request, 'app/wikiversion_list.html', context)
