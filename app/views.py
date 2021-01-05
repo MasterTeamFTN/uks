@@ -1,6 +1,6 @@
 from django.shortcuts import render
+from app.models import Label, Project, Wiki, WikiVersion
 from django.urls import reverse_lazy
-from app.models import Project, Wiki, WikiVersion
 from django.views.generic import ListView, DetailView, CreateView, UpdateView, DeleteView
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 
@@ -21,6 +21,11 @@ def projects(request):
     }
     return render(request, 'app/projects.html', context);
 
+def labels(request):
+    context = {
+        'labels': Label.objects.all()
+    }
+    return render(request, 'app/labels.html', context)
 
 class ProjectDetailView(DetailView):
     model = Project 
@@ -44,10 +49,26 @@ class ProjectCreateView(LoginRequiredMixin, CreateView):
         form.instance.author = self.request.user
         return super().form_valid(form)
 
+class LabelUpdateView(LoginRequiredMixin, UpdateView):
+    model = Label
+    fields = ['name', 'description', 'color']
+
+class LabelDeleteView(LoginRequiredMixin, DeleteView):
+    model = Label
+    success_url = '/labels'
+
+class LabelCreateView(LoginRequiredMixin, CreateView):
+    model = Label
+    fields = ['name', 'description', 'color']
+
+    def form_valid(self, form):
+        form.instance.author = self.request.user
+        return super().form_valid(form)
+
 
 def wikis_list_view(request, project_pk):
     project = Project.objects.get(pk=project_pk)
-     
+
     context = {
         'wikis': Wiki.objects.filter(project=project),
         'project': project
@@ -73,10 +94,10 @@ class WikiCreateView(LoginRequiredMixin, UserPassesTestMixin, CreateView):
         return self.request.user in project.contributors.all()
 
 class WikiDeleteView(LoginRequiredMixin, UserPassesTestMixin, DeleteView):
-    model = Wiki 
+    model = Wiki
 
     def get_success_url(self):
-        wiki = self.get_object() 
+        wiki = self.get_object()
         return reverse_lazy('wiki-list', kwargs={'project_pk': wiki.project.id})
 
     def test_func(self):

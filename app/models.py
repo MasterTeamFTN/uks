@@ -2,6 +2,7 @@ from django.db import models
 from django.utils import timezone
 from django.contrib.auth.models import User
 from django.urls import reverse
+from colorfield.fields import ColorField
 from ckeditor.fields import RichTextField
 from django_currentuser.middleware import get_current_authenticated_user
 
@@ -18,6 +19,17 @@ class Project(models.Model):
 
     def get_absolute_url(self):
         return reverse('project-detail', kwargs={'pk': self.pk})
+
+class Label(models.Model):
+    name = models.CharField(max_length=100)
+    color = ColorField(default='#FF0000')
+    description = models.TextField()
+
+    def __str__(self):
+        return self.name
+
+    def get_absolute_url(self):
+        return reverse('app-labels')
 
 class Wiki(models.Model):
     title = models.CharField(max_length=100)
@@ -38,7 +50,7 @@ class Wiki(models.Model):
         is_new = True if not self.id else False
         super(Wiki, self).save(*args, **kwargs)
         WikiVersion.objects.create(wiki=self, updated_by=get_current_authenticated_user())
-        
+
 
 class WikiVersion(models.Model):
     wiki = models.ForeignKey(Wiki, on_delete=models.CASCADE, default=None)
