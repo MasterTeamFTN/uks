@@ -31,7 +31,12 @@ class Label(models.Model):
     def get_absolute_url(self):
         return reverse('app-labels')
 
+class Dummy(models.Model):
+    name = models.CharField(max_length=100)
+    dummyField = models.CharField(max_length=44)
+
 class Wiki(models.Model):
+    dummyField = models.CharField(max_length=41)
     title = models.CharField(max_length=100)
     created_on = models.DateTimeField(default=timezone.now)
     project = models.ForeignKey(Project, on_delete=models.CASCADE)
