@@ -1,0 +1,25 @@
+{% extends "app/base.html" %}
+
+{% block content %}
+<div style="display: flex;">
+    <h4>
+        <a href="{% url 'project-detail' wiki.project.id %}">{{ wiki.project.name }}</a>
+        - 
+        <a href="{% url 'wiki-list' wiki.project.id %}">Wikis</a>
+        -
+        <a href="{% url 'wiki-detail' wiki.project.id wiki.id %}">{{ wiki.title }}</a>
+    </h4>
+</div>
+
+<ul class="mt-2">
+    {% for version in versions %}
+        <li>
+            Updated on {{ version.updated_on|date:"F d, Y H:i" }}, 
+
+            <!-- TODO: dodati link ka profilu korisnika -->
+            by <a href="#" >{{ version.updated_by.username }}</a>
+        </li>
+    {% endfor %}
+</ul>
+
+{% endblock content %}

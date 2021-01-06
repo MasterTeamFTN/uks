@@ -1,0 +1,35 @@
+{% extends "app/base.html" %}
+
+{% block content %}
+    <div style="display: flex;">
+        <h4>
+            <a href="{% url 'project-detail' project.id %}">{{ project.name }}</a>
+            - Labels
+        </h4>
+    
+        <a href="{% url 'label-create' project.pk %}" class="btn btn-primary mb-2" style="margin-left: auto;">New</a>
+    </div>
+
+    <table class="table" style="border-collapse:separate; border-spacing: 0 15px;">
+        <tbody>
+            {% for label in labels %}
+                <tr style="height: 10">
+                    <td style="background-color: {{label.color}}">{{ label.name }}</td>
+                    <td>{{ label.description }}</td>
+                    <td><a class="btn btn-primary btn-sm mt-1 mb-1" href="{% url 'label-update' label.project.id label.id%}">Edit</a></td>
+                    <td><a class="btn btn-danger btn-sm mt-1 mb-1" href="{% url 'label-delete' label.project.id label.id%}">Delete</a></td>
+                </tr>
+            {% empty %}
+                <p>
+                    You can manage your work on GitHub by creating labels to categorize issues and pull requests.
+                    You can apply labels in the repository the label was created in.
+                </p>
+                <tr>
+                    <td><a href="{% url 'label-create' project.pk %}"> Create your first label</a></td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+
+{% endblock content %}

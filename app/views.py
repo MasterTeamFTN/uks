@@ -1,6 +1,6 @@
 from django.shortcuts import render
+from app.models import Label, Project, Wiki, WikiVersion
 from django.urls import reverse_lazy
-from app.models import Project, Wiki, WikiVersion
 from django.views.generic import ListView, DetailView, CreateView, UpdateView, DeleteView
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 
@@ -19,13 +19,20 @@ def projects(request):
     context = {
         'projects': Project.objects.all()
     }
-    return render(request, 'app/projects.html', context);
+    return render(request, 'app/project/projects.html', context);
 
+def labels(request):
+    context = {
+        'labels': Label.objects.all()
+    }
+    return render(request, 'app/label/label_list.html', context)
 
 class ProjectDetailView(DetailView):
+    template_name = 'app/project/project_detail.html'
     model = Project 
 
 class ProjectDeleteView(LoginRequiredMixin, UserPassesTestMixin, DeleteView):
+    template_name = 'app/project/project_confirm_delete.html'
     model = Project 
     success_url = '/'
 
@@ -37,6 +44,7 @@ class ProjectDeleteView(LoginRequiredMixin, UserPassesTestMixin, DeleteView):
 
 
 class ProjectCreateView(LoginRequiredMixin, CreateView):
+    template_name = 'app/project/project_form.html'
     model = Project 
     fields = ['name', 'description', 'is_public', 'contributors']
 
@@ -44,21 +52,55 @@ class ProjectCreateView(LoginRequiredMixin, CreateView):
         form.instance.author = self.request.user
         return super().form_valid(form)
 
+class LabelUpdateView(LoginRequiredMixin, UpdateView):
+    template_name = 'app/label/label_form.html'
+    model = Label
+    fields = ['name', 'description', 'color']
+
+class LabelDeleteView(LoginRequiredMixin, DeleteView):
+    template_name = 'app/label/label_confirm_delete.html'
+    model = Label
+    
+    def get_success_url(self):
+        label = self.get_object()
+        return reverse_lazy('label-list', kwargs={'project_pk': label.project.id})
+
+class LabelCreateView(LoginRequiredMixin, CreateView):
+    template_name = 'app/label/label_form.html'
+    model = Label
+    fields = ['name', 'description', 'color']
+
+    def form_valid(self, form):
+        project_id = self.kwargs.get('project_pk')
+        form.instance.project = Project.objects.get(pk=project_id)
+        return super().form_valid(form)
+
+def label_list_view(request, project_pk):
+    project = Project.objects.get(pk=project_pk)
+
+    context = {
+        'labels': Label.objects.filter(project=project),
+        'project': project
+    }
+
+    return render(request, 'app/label/label_list.html', context)
 
 def wikis_list_view(request, project_pk):
     project = Project.objects.get(pk=project_pk)
-     
+
     context = {
         'wikis': Wiki.objects.filter(project=project),
         'project': project
     }
 
-    return render(request, 'app/wiki_list.html', context)
+    return render(request, 'app/wiki/wiki_list.html', context)
 
 class WikiDetailView(DetailView):
+    template_name = 'app/wiki/wiki_detail.html'
     model = Wiki
 
 class WikiCreateView(LoginRequiredMixin, UserPassesTestMixin, CreateView):
+    template_name = 'app/wiki/wiki_form.html'
     model = Wiki
     fields = ['title', 'text']
 
@@ -73,10 +115,11 @@ class WikiCreateView(LoginRequiredMixin, UserPassesTestMixin, CreateView):
         return self.request.user in project.contributors.all()
 
 class WikiDeleteView(LoginRequiredMixin, UserPassesTestMixin, DeleteView):
-    model = Wiki 
+    template_name = 'app/wiki/wiki_confirm_delete.html'
+    model = Wiki
 
     def get_success_url(self):
-        wiki = self.get_object() 
+        wiki = self.get_object()
         return reverse_lazy('wiki-list', kwargs={'project_pk': wiki.project.id})
 
     def test_func(self):
@@ -84,6 +127,7 @@ class WikiDeleteView(LoginRequiredMixin, UserPassesTestMixin, DeleteView):
         return self.request.user in wiki.project.contributors.all()
 
 class WikiUpdateView(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
+    template_name = 'app/wiki/wiki_form.html'
     model = Wiki
     fields = ['title', 'text']
 
@@ -100,4 +144,4 @@ def wiki_versions_list_view(request, project_pk, pk):
         'versions': WikiVersion.objects.filter(wiki=wiki).order_by('-updated_on')
     }
 
-    return render(request, 'app/wikiversion_list.html', context)
+    return render(request, 'app/wiki/wikiversion_list.html', context)
