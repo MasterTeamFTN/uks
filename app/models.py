@@ -5,6 +5,7 @@ from django.urls import reverse
 from colorfield.fields import ColorField
 from ckeditor.fields import RichTextField
 from django_currentuser.middleware import get_current_authenticated_user
+from django.forms.widgets import TextInput
 
 class Project(models.Model):
     name = models.CharField(max_length=100)
@@ -24,19 +25,17 @@ class Label(models.Model):
     name = models.CharField(max_length=100)
     color = ColorField(default='#FF0000')
     description = models.TextField()
+    project = models.ForeignKey(Project, on_delete=models.CASCADE)
 
     def __str__(self):
         return self.name
 
     def get_absolute_url(self):
-        return reverse('app-labels')
-
-class Dummy(models.Model):
-    name = models.CharField(max_length=100)
-    dummyField = models.CharField(max_length=44)
+        return reverse('label-list', kwargs={
+            'project_pk': self.project.pk
+        })
 
 class Wiki(models.Model):
-    dummyField = models.CharField(max_length=41)
     title = models.CharField(max_length=100)
     created_on = models.DateTimeField(default=timezone.now)
     project = models.ForeignKey(Project, on_delete=models.CASCADE)
