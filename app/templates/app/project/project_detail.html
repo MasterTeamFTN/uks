@@ -10,18 +10,11 @@
                 <a href="{% url 'label-list' project.id %}" class="mr-2">Labels</a>
                 <a href="#" class="mr-2">Milestones</a>
                 <a href="#" class="mr-2">Statistics</a>
-                <a href="#" class="mr-2">Contributors</a>
+                <a href="{% url 'project-contributors' project.id %}" class="mr-2">Contributors</a>
             </div>
 
             <h2 class="article-title">{{ project.name }}</h2>
             <p class="article-content">{{ project.description }}</p>
-            
-            <p class="article-content">Project contributors</p>
-            <ul>
-                {% for contributor in project.contributors.all %}
-                <li>{{ contributor.first_name }} {{ contributor.last_name }} ( {{ contributor.username }} )</li>
-                {% endfor %}
-            </ul>
             
             <small class="text-muted">Last updated on {{ project.updated_on|date:"F d, Y"}}</small>
         </div>

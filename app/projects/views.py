@@ -1,5 +1,6 @@
 from django.shortcuts import render
 from .models import Project
+from django.contrib.auth.models import User
 from django.urls import reverse_lazy
 from django.views.generic import DetailView, CreateView, DeleteView
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
@@ -33,3 +34,14 @@ class ProjectCreateView(LoginRequiredMixin, CreateView):
     def form_valid(self, form):
         form.instance.author = self.request.user
         return super().form_valid(form)
+
+def project_contributors(request, pk):
+    project = Project.objects.get(pk=pk)
+
+    context = { 
+        'project_id': project.id,
+        'project_name': project.name,
+        'contributors': project.contributors.all()
+    }
+
+    return render(request, 'app/project/contributors.html', context=context)
