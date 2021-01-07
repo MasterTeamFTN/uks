@@ -1,7 +1,11 @@
 from django.contrib import admin
-from .models import Project, Label, Wiki, WikiVersion
+from .projects.models import Project
+from .labels.models import Label
+from .wikis.models import Wiki, WikiVersion
 
-admin.site.register(Project)
-admin.site.register(Label)
-admin.site.register(Wiki)
-admin.site.register(WikiVersion)
+admin.site.register([
+    Project,
+    Label,
+    Wiki,
+    WikiVersion,
+])
