@@ -1,0 +1,24 @@
+{% extends "app/base.html" %}
+
+{% block content %}
+
+<h4>
+    <a href="{% url 'project-detail' project_id %}">{{ project_name }}</a> - Contributors
+</h4>
+
+<p class="article-content mt-2">
+    {{ contributors|length }} people have contributed to this project
+</p>
+
+<ul>
+    {% for contributor in contributors %}
+        <li>
+            <!-- TODO: dodati link ka profilu korisnika kad se napravi ta stranica -->
+            <a href="#">
+                {{ contributor.first_name }} {{ contributor.last_name }} ( {{ contributor.username }} )
+            </a>
+        </li>
+    {% endfor %}
+</ul>
+
+{% endblock content %}
