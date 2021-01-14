@@ -1,0 +1,45 @@
+{% extends "app/base.html" %}
+
+{% block content %}
+<h4>{{ object.name }}</h4>
+
+<ul class="nav nav-tabs" id="myTab" role="tablist">
+    <li class="nav-item">
+        <a class="nav-link active" id="info-tab" data-toggle="tab" href="#info" role="tab" aria-controls="info" aria-selected="true">Info</a>
+    </li>
+    <li class="nav-item">
+        <a class="nav-link" id="members-tab" data-toggle="tab" href="#members" role="tab" aria-controls="members" aria-selected="false">Members</a>
+    </li>
+</ul>
+
+<div class="tab-content mt-2" id="myTabContent">
+    <div class="tab-pane fade show active" id="info" role="tabpanel" aria-labelledby="info-tab">
+        <article class="media content-section">
+            <div class="media-body">
+                <small class="text-muted">Created on {{ object.created_on|date:"F d, Y" }}</small>
+                <p class="article-content">{{ object.description }}</p>
+            </div>
+        </article>
+    </div>
+
+    <div class="tab-pane fade" id="members" role="tabpanel" aria-labelledby="members-tab">
+        <article class="media content-section">
+            <div class="media-body">
+                <h5>Members</h5>
+                <ul>
+                    {% for member in object.members.all %}
+                    <li>
+                        <!-- TODO: Mozda dodati link ka profilu korisnika? -->
+                        <!-- Morace se napraviti zasebna putanja tipa /profile/1 -->
+                        {{ member.first_name }} {{ member.last_name }} - {{ member.username }}
+                    </li>
+                    {% empty %}
+                    <p>This organization doesn't have any members</p>
+                    {% endfor %}
+                </ul>
+            </div>
+        </article>
+    </div>
+</div>
+
+{% endblock content %}
