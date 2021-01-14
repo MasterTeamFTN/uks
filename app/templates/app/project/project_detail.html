@@ -8,14 +8,14 @@
             <div class="article-metadata">
                 <a href="{% url 'wiki-list' project.id %}" class="mr-2">Wiki</a>
                 <a href="{% url 'label-list' project.id %}" class="mr-2">Labels</a>
-                <a href="#" class="mr-2">Milestones</a>
+                <a href="{% url 'milestone-list' project.id %}" class="mr-2">Milestones</a>
                 <a href="#" class="mr-2">Statistics</a>
                 <a href="{% url 'project-contributors' project.id %}" class="mr-2">Contributors</a>
             </div>
 
             <h2 class="article-title">{{ project.name }}</h2>
             <p class="article-content">{{ project.description }}</p>
-            
+
             <small class="text-muted">Last updated on {{ project.updated_on|date:"F d, Y"}}</small>
         </div>
     </article>

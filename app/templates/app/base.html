@@ -30,7 +30,7 @@
               <a class="nav-item nav-link" href="{% url 'app-home' %}">Home</a>
               <a class="nav-item nav-link" href="{% url 'app-about' %}">About</a>
             </div>
-            
+
             <!-- Navbar Right Side -->
             <div class="navbar-nav">
               {% if user.is_authenticated %}
@@ -44,7 +44,7 @@
         </div>
       </nav>
     </header>
-    
+
     <main role="main" class="container">
       <div class="row">
         <div class="col-md-9">
@@ -54,7 +54,7 @@
               <div class="alert alert-{{ message.tags }}">{{ message }}</div>
             {% endfor %}
           {% endif %}
-          
+
           <!-- Main content for authenticated user -->
           {% block content %} {% endblock %}
         </div>
@@ -100,7 +100,7 @@
                       <span class="menu-collapsed">Other</span>
                   </a>
               </div>
-              <a href="#submenu2" data-toggle="collapse" aria-expanded="false" class="bg-dark list-group-item list-group-item-action flex-column align-items-start">
+              <a href="{% url 'profile'%}" data-toggle="collapse" aria-expanded="false" class="bg-dark list-group-item list-group-item-action flex-column align-items-start">
                   <div class="d-flex w-100 justify-content-start align-items-center">
                       <span class="fa fa-user fa-fw mr-3"></span>
                       <span class="menu-collapsed"><strong>Profile</strong></span>

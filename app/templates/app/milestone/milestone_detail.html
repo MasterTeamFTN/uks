@@ -1,0 +1,26 @@
+{% extends "app/base.html" %}
+
+{% block content %}
+<div>
+    <a href="{% url 'milestone-update' object.project.pk object.pk %}" class="btn btn-primary mb-2 float-right" style="margin-left: auto;">Edit</a>
+
+    <hr class="mt-3">
+    <div class="row mb-3 mt-3">
+        <h4>
+            <a href="{% url 'project-detail' object.project.id %}">{{ object.project.name }}</a>
+            - Milestone
+            {{ object.title }}
+        </h4>
+    </div>
+    <div class="progress">
+        <div class="progress-bar bg-success" role="progressbar" style="width: 25%" aria-valuenow="25" aria-valuemin="0" aria-valuemax="100"></div>
+    </div>
+    <div class="row mt-1">
+        <small>{{ object.due_date|default_if_none:"No due date" }} | 25% complete</small>
+    </div>
+    <div class="row">
+        {{ object.description }}
+    </div>
+</div>
+
+{% endblock content %}

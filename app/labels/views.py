@@ -13,7 +13,7 @@ class LabelUpdateView(LoginRequiredMixin, UpdateView):
 class LabelDeleteView(LoginRequiredMixin, DeleteView):
     template_name = 'app/label/label_confirm_delete.html'
     model = Label
-    
+
     def get_success_url(self):
         label = self.get_object()
         return reverse_lazy('label-list', kwargs={'project_pk': label.project.id})
