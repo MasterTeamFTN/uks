@@ -1,7 +1,14 @@
 {% extends "app/base.html" %}
 
 {% block content %}
-<h4>{{ object.name }}</h4>
+<div style="display: flex;">
+    <h4>{{ object.name }}</h4>
+
+    <div style="margin-left: auto;">
+        <a href="{% url 'organization-edit' object.pk %}" class="btn btn-secondary btn-sm">Edit</a>
+        <a href="{% url 'organization-delete' object.pk %}" class="btn btn-danger btn-sm">Delete</a>
+    </div>
+</div>
 
 <ul class="nav nav-tabs" id="myTab" role="tablist">
     <li class="nav-item">
