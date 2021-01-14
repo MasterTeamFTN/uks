@@ -1,0 +1,21 @@
+{% extends "app/base.html" %}
+{% load crispy_forms_tags %}
+{% block content %}
+    <div class="row content-section">
+      <div class="col-md-5 media">
+        <img class="rounded-circle mt-5" src="{{ user.profile.image.url }}">
+      </div>
+      <div class="col-md-7 mt-5">
+        <form method="POST" enctype="multipart/form-data">
+            {% csrf_token %}
+            <fieldset class="form-group">
+                <legend class="border-bottom mb-4">Profile Info</legend>
+                <h3>{{ user.username }}</h3>
+                {{ user.email }} <br />
+                {{ user.first_name }} {{ user.last_name }}
+            </fieldset>
+            <a class="btn btn-primary btn-sm mt-1 mb-1" href="{% url 'edit-profile'%}">Edit</a>
+        </form>
+      </div>
+    </div>
+{% endblock content %}
