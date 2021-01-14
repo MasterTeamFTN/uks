@@ -4,8 +4,10 @@
 
     <div style="display: flex;">
         <h4>All organizations</h4>
-    
+
+        {% if user.is_authenticated %}
         <a href="{% url 'organization-create' %}" class="btn btn-primary mb-2" style="margin-left: auto;">New organization</a>
+        {% endif %}
     </div>
 
 {% for org in organizations %}

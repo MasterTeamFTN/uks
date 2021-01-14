@@ -4,10 +4,12 @@
 <div style="display: flex;">
     <h4>{{ object.name }}</h4>
 
+    {% if user.is_authenticated %}
     <div style="margin-left: auto;">
         <a href="{% url 'organization-edit' object.pk %}" class="btn btn-secondary btn-sm">Edit</a>
         <a href="{% url 'organization-delete' object.pk %}" class="btn btn-danger btn-sm">Delete</a>
     </div>
+    {% endif %}
 </div>
 
 <ul class="nav nav-tabs" id="myTab" role="tablist">
@@ -32,6 +34,10 @@
     <div class="tab-pane fade" id="members" role="tabpanel" aria-labelledby="members-tab">
         <article class="media content-section">
             <div class="media-body">
+                {% if user.is_authenticated %}
+                    {% include "app/organization/add_member.html" with org_id=object.pk %}
+                {% endif %}
+
                 <h5>Members</h5>
                 <ul>
                     {% for member in object.members.all %}

@@ -1,7 +1,11 @@
-from django.shortcuts import render
+from django.shortcuts import render, redirect, HttpResponse
+from django.http import HttpResponseBadRequest
 from .models import Organization
 from django.views.generic import ListView, CreateView, DetailView, UpdateView, DeleteView
+from django.contrib import messages
 from django.contrib.auth.mixins import LoginRequiredMixin
+from django.contrib.auth.models import User
+from django.contrib.auth.decorators import login_required
 
 class AllOrganizationsListView(ListView):
     model = Organization
@@ -36,3 +40,28 @@ class OrganizationDeleteView(LoginRequiredMixin, DeleteView):
     success_url = '/organizations'
 
     # TODO: dodati test_func za proveru da samo clanovi mogu da obrisu
+
+@login_required
+def add_member(request, pk):
+    if request.method != 'POST':
+        return HttpResponseBadRequest()
+
+    username = request.POST['member_username']
+    print(username)
+
+    try:
+        user = User.objects.get(username=username)
+    except:
+        messages.warning(request, f'Error! User {username} doesn\'t exist.')
+        return redirect('organization-detail', pk)
+
+    organization = Organization.objects.get(pk=pk)
+
+    if user in organization.members.all():
+        messages.warning(request, f'User {username} is already in the members list.')
+        return redirect('organization-detail', pk)
+
+    organization.members.add(user)
+
+    messages.success(request, f'User {username} has been added to the members list.')
+    return redirect('organization-detail', pk)
