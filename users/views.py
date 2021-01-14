@@ -17,7 +17,7 @@ def register(request):
     return render(request, 'users/register.html', {'form': form})
 
 @login_required
-def profile(request):
+def editProfile(request):
     if request.method == 'POST':
         userForm = UserUpdateForm(request.POST, instance=request.user)
         profileForm = ProfileUpdateForm(request.POST,
@@ -27,7 +27,7 @@ def profile(request):
             userForm.save()
             profileForm.save()
             messages.success(request, f'Your account has been updated!')
-            return redirect('profile')
+            return redirect('edit-profile')
 
     else:
         userForm = UserUpdateForm(instance=request.user)
@@ -38,4 +38,10 @@ def profile(request):
         'profileForm': profileForm
     }
 
-    return render(request, 'users/profile.html', context)
+    return render(request, 'users/edit_profile.html', context)
+
+@login_required
+def profile(request):
+    template_name = 'users/profile_details.html'
+    model = request.user
+    return render(request, 'users/profile_details.html')
