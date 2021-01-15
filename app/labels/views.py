@@ -25,7 +25,13 @@ class LabelCreateView(LoginRequiredMixin, CreateView):
 
     def form_valid(self, form):
         project_id = self.kwargs.get('project_pk')
-        form.instance.project = Project.objects.get(pk=project_id)
+        project = Project.objects.get(pk=project_id)
+
+        if Label.objects.filter(name=form.instance.name, project=project).exists():
+            form.add_error('name', 'This name already exists')
+            return super().form_invalid(form)
+
+        form.instance.project = project
         return super().form_valid(form)
 
 def label_list_view(request, project_pk):
