@@ -10,9 +10,16 @@
 
 </div>
 
+{% if versions.all.first.task_state == 'DONE' %}
+<span class="badge badge-primary mr-2" style="background-color: red">
+    <span class="badge badge-primary mr-1 " style="background-color: white; color: red; border: 1px solid red; ">!</span>Closed
+</span>
+{% else %}
 <span class="badge badge-primary mr-2" style="background-color: green">
     <span class="badge badge-primary mr-1 " style="background-color: white; color: green; border: 1px solid green; ">!</span>Open
 </span>
+{% endif %}
+
 <small><b>{{ versions.all.last.updated_by.username  }} </b> opened this issue {{ versions.all.last.updated_on | naturaltime }}</small>
 <hr />
 <h4 class="mt-5">Description</h4>
@@ -23,7 +30,7 @@
 <ul class="mt-2">
     {% for version in versions %}
         <li>
-            Updated on {{ version.updated_on|date:"F d, Y H:i" }},
+            Changed to {{ version.task_state }} on {{ version.updated_on|date:"F d, Y H:i" }},
             by <a href="#" >{{ version.updated_by.username }}</a>
         </li>
     {% endfor %}
@@ -47,6 +54,18 @@
 {% else %}
 <h4 class="mt-5">Milestone</h4>
 -             <a href="{% url 'milestone-detail' task.project.id task.milestone.id %}">{{ task.milestone }}</a>
+{% endif %}
+
+{% if versions.all.first.task_state == 'DONE' %}
+<form class="mt-5 mb-5" action="{% url 'reopen-task' task.project.id task.id %}" method='POST'>
+    {% csrf_token %}
+    <button  class="btn btn-outline-success" type="submit"><span class="badge badge-primary mr-1" style="background-color: white; color: green; border: 1px solid green; ">!</span> Reopen task</button>
+</form>
+{% else %}
+<form class="mt-5 mb-5" action="{% url 'close-task' task.project.id task.id %}" method='POST'>
+    {% csrf_token %}
+    <button  class="btn btn-outline-danger" type="submit"><span class="badge badge-primary mr-1" style="background-color: white; color: red; border: 1px solid red; ">/</span> Close task</button>
+</form>
 {% endif %}
 
 {% endblock content %}

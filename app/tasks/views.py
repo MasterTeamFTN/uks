@@ -1,9 +1,10 @@
 from django.shortcuts import render
-from .models import Task, Project, TaskVersion
+from .models import Task, Project, TaskVersion, TaskState
 from django.contrib.auth.models import User
 from django.urls import reverse_lazy
 from django.views.generic import DetailView, CreateView, DeleteView
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
+from django_currentuser.middleware import get_current_authenticated_user
 
 class TaskCreateView(LoginRequiredMixin, UserPassesTestMixin, CreateView):
     template_name = 'app/task/task_form.html'
@@ -19,18 +20,6 @@ class TaskCreateView(LoginRequiredMixin, UserPassesTestMixin, CreateView):
         project = Project.objects.get(pk=project_id)
         return self.request.user in project.contributors.all()
 
-class task_close_view(request, project_pk, pk):
-    template_name = 'app/task/close_task.html'
-    model = Task
-
-    def get_success_url(self):
-        task = self.get_object()
-        return reverse_lazy('task-list', kwargs={'project_pk': task.project.id, 'task_pk': task.id})
-
-    def test_func(self):
-        task = self.get_object()
-        return self.request.user in task.project.contributors.all()
-
 def task_list_view(request, project_pk):
     project = Project.objects.get(pk=project_pk)
     tasks = Task.objects.filter(project=project)
@@ -40,6 +29,28 @@ def task_list_view(request, project_pk):
     }
 
     return render(request, 'app/task/task_list.html', context)
+
+def close_task(request, project_pk, pk):
+    task = Task.objects.get(pk=pk)
+    TaskVersion.objects.create(task=task, updated_by=get_current_authenticated_user(), task_state = TaskState.DONE)
+
+    context = {
+        'task': task,
+        'versions': TaskVersion.objects.filter(task=task).order_by('-updated_on')
+    }
+
+    return render(request, 'app/task/task_details.html', context)
+
+def reopen_task(request, project_pk, pk):
+    task = Task.objects.get(pk=pk)
+    TaskVersion.objects.create(task=task, updated_by=get_current_authenticated_user(), task_state = TaskState.TO_DO)
+
+    context = {
+        'task': task,
+        'versions': TaskVersion.objects.filter(task=task).order_by('-updated_on')
+    }
+
+    return render(request, 'app/task/task_details.html', context)
 
 def task_detail_view(request, project_pk, pk):
     task = Task.objects.get(pk=pk)
