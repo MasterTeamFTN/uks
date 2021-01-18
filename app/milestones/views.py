@@ -1,6 +1,7 @@
 from django.shortcuts import render
 from .models import Milestone
 from ..projects.models import Project
+from ..tasks.models import Task
 from django.urls import reverse_lazy
 from django.views.generic import DetailView, CreateView, UpdateView, DeleteView
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
@@ -37,9 +38,27 @@ class MilestoneDeleteView(LoginRequiredMixin, DeleteView):
         milestone = self.get_object()
         return reverse_lazy('milestone-list', kwargs={'project_pk': milestone.project.id})
 
-class MilestoneDetailView(DetailView):
-    template_name = 'app/milestone/milestone_detail.html'
-    model = Milestone
+def milestone_detail_view(request, project_pk, pk):
+    milestone = Milestone.objects.get(pk=pk)
+    tasks = Task.objects.filter(milestone=milestone)
+    open_tasks = []
+    closed_tasks = []
+    for task in tasks:
+        if task.current_state():
+            if task.current_state().task_state == "DONE":
+                closed_tasks.append(task)
+            else:
+                open_tasks.append(task)
+    percentage = 0
+    if len(open_tasks) + len(closed_tasks) != 0:
+        percentage =  round(len(closed_tasks)/(len(open_tasks) + len(closed_tasks)) * 100)
+    context = {
+        'object': milestone,
+        'open_tasks': open_tasks,
+        'closed_tasks': closed_tasks,
+        'percent_done': percentage
+    }
+    return render(request, 'app/milestone/milestone_detail.html', context)
 
 def milestone_list_view(request, project_pk):
     project = Project.objects.get(pk=project_pk)
@@ -48,5 +67,4 @@ def milestone_list_view(request, project_pk):
         'milestones': Milestone.objects.filter(project=project),
         'project': project
     }
-
     return render(request, 'app/milestone/milestone_list.html', context)
