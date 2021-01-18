@@ -9,21 +9,26 @@
 
         <a href="{% url 'task-create' project.pk %}" class="btn btn-primary mb-2 mt-5" style="margin-left: auto;">New</a>
     </div>
-
     <span class="badge badge-primary mr-1 " style="background-color: white; color: green; border: 1px solid green; ">!</span> Open
     <span class="badge badge-primary mr-1" style="background-color: white; color: red; border: 1px solid red; ">/</span> Closed
     {% for task in tasks %}
     <hr class="mt-5">
-    <span class="badge badge-primary mr-3" style="background-color: white; color: green; border: 1px solid green; ">!</span><span class="font-weight-bold">
-        <a class="article-title" href="{% url 'task-detail' project.id task.id%}"> {{ task.title }}</a></span>
-        {% for label in task.labels.all %}
-            <span class="badge badge-primary" style="background-color: {{ label.color }}">{{ label.name }}</span>
-        {% endfor %}
-        <br />
-        {% if not task.milestone %}
-        {% else %}
-        <span class="ml-4"></span>Milestone -             <a href="{% url 'milestone-detail' project.id task.milestone.id %}">{{ task.milestone }}</a>
-        {% endif %}
+    {% if task.current_state == 'DONE' %}
+    <span class="badge badge-primary mr-1" style="background-color: white; color: red; border: 1px solid red; ">! Closed</span>
+    {% else %}
+    <span class="badge badge-primary mr-1" style="background-color: white; color: green; border: 1px solid green; ">! Open</span>
+    {% endif %}
+    <span class="font-weight-bold">
+        <a class="article-title" href="{% url 'task-detail' project.id task.id%}"> {{ task.title }}</a>
+    </span>
+    {% for label in task.labels.all %}
+        <span class="badge badge-primary" style="background-color: {{ label.color }}">{{ label.name }}</span>
+    {% endfor %}
+    <br />
+    {% if not task.milestone %}
+    {% else %}
+    <span class="ml-5"></span>Milestone -             <a href="{% url 'milestone-detail' project.id task.milestone.id %}">{{ task.milestone }}</a>
+    {% endif %}
 
 
 

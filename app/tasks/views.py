@@ -26,9 +26,20 @@ def task_list_view(request, project_pk):
     context = {
         'tasks': tasks,
         'project': project,
+        'versions': TaskVersion.objects.all()
     }
 
     return render(request, 'app/task/task_list.html', context)
+
+def my_task_list_view(request):
+    current_user = request.user
+    tasks = Task.objects.filter(assignees=current_user.id)
+
+    context = {
+        'tasks': tasks
+    }
+
+    return render(request, 'app/task/user_task_list.html', context)
 
 def close_task(request, project_pk, pk):
     task = Task.objects.get(pk=pk)

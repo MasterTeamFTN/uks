@@ -26,6 +26,10 @@ class Task(models.Model):
         super(Task, self).save(*args, **kwargs)
         TaskVersion.objects.create(task=self, updated_by=get_current_authenticated_user(), task_state=TaskState.TO_DO)
 
+    def current_state(self):
+        tasks = TaskVersion.objects.filter(task=self).order_by('-updated_on')
+        return tasks.all().first().task_state;
+
 class TaskState(models.TextChoices):
     TO_DO = 'TO_DO', _('To do')
     IN_PROGRESS = 'IN_PROGRESS', _('In progress')
