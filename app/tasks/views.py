@@ -40,6 +40,35 @@ def task_list_view(request, project_pk):
 
     return render(request, 'app/task/task_list.html', context)
 
+def board_view(request, project_pk):
+    project = Project.objects.get(pk=project_pk)
+    tasks = Task.objects.filter(project=project)
+    to_do = []
+    in_progress = []
+    review = []
+    done = []
+    for task in tasks:
+        if task.current_state():
+            if task.current_state().task_state == "TO_DO":
+                to_do.append(task)
+            if task.current_state().task_state  == "IN_PROGRESS":
+                in_progress.append(task)
+            if task.current_state().task_state == "REVIEW":
+                review.append(task)
+            if task.current_state().task_state == "DONE":
+                done.append(task)
+
+    context = {
+        'to_do': to_do,
+        'in_progress': in_progress,
+        'review': review,
+        'done': done,
+        'project': project,
+        'versions': TaskVersion.objects.all()
+    }
+
+    return render(request, 'app/task/board.html', context)
+
 def my_task_list_view(request):
     current_user = request.user
     tasks = Task.objects.filter(assignees=current_user.id)
@@ -60,6 +89,30 @@ def close_task(request, project_pk, pk):
     }
 
     return render(request, 'app/task/task_details.html', context)
+
+def progress_task(request, project_pk, pk):
+    task = Task.objects.get(pk=pk)
+    TaskVersion.objects.create(task=task, updated_by=get_current_authenticated_user(), task_state = TaskState.IN_PROGRESS)
+
+    return board_view(request, project_pk)
+
+def review_task(request, project_pk, pk):
+    task = Task.objects.get(pk=pk)
+    TaskVersion.objects.create(task=task, updated_by=get_current_authenticated_user(), task_state = TaskState.REVIEW)
+
+    return board_view(request, project_pk)
+
+def todo_task(request, project_pk, pk):
+    task = Task.objects.get(pk=pk)
+    TaskVersion.objects.create(task=task, updated_by=get_current_authenticated_user(), task_state = TaskState.TO_DO)
+
+    return board_view(request, project_pk)
+
+def done_task(request, project_pk, pk):
+    task = Task.objects.get(pk=pk)
+    TaskVersion.objects.create(task=task, updated_by=get_current_authenticated_user(), task_state = TaskState.DONE)
+
+    return board_view(request, project_pk)
 
 def reopen_task(request, project_pk, pk):
     task = Task.objects.get(pk=pk)
