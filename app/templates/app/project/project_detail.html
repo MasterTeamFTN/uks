@@ -8,6 +8,8 @@
             <div class="article-metadata">
                 <a href="{% url 'wiki-list' project.id %}" class="mr-2">Wiki</a>
                 <a href="{% url 'label-list' project.id %}" class="mr-2">Labels</a>
+                <a href="{% url 'board' project.id %}" class="mr-2">Board</a>
+
                 <a href="{% url 'task-list' project.id %}" class="mr-2">Tasks</a>
                 <a href="{% url 'milestone-list' project.id %}" class="mr-2">Milestones</a>
                 <a href="#" class="mr-2">Statistics</a>
