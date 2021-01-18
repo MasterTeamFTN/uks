@@ -1,0 +1,73 @@
+{% extends "app/base.html" %}
+{% load humanize %}
+
+{% block content %}
+<div style="display: flex;">
+    <h4>
+        <a href="{% url 'project-detail' task.project.id %}">{{ task.project.name }}</a> -
+        {{ task.title }}
+    </h4>
+
+</div>
+
+{% if task.current_state.task_state == 'DONE' %}
+<span class="badge badge-primary mr-2" style="background-color: red">
+    <span class="badge badge-primary mr-1 " style="background-color: white; color: red; border: 1px solid red; ">!</span>Closed
+</span>
+{% else %}
+<span class="badge badge-primary mr-2" style="background-color: green">
+    <span class="badge badge-primary mr-1 " style="background-color: white; color: green; border: 1px solid green; ">!</span>Open
+</span>
+{% endif %}
+
+<small><b>{{ versions.all.last.updated_by.username  }} </b> opened this issue {{ versions.all.last.updated_on | naturaltime }}</small>
+<a href="{% url 'task-update' task.project.id task.id %}" class="btn btn-primary btn-sm float-right">Update</a>
+<hr />
+<h4 class="mt-5">Description</h4>
+<div class="mt-1">
+    {{ task.description | safe }}
+</div>
+<h4 class="mt-5">History</h4>
+<ul class="mt-2">
+    {% for version in versions %}
+        <li>
+            Changed to {{ version.task_state }} on {{ version.updated_on|date:"F d, Y H:i" }},
+            by <a href="#" >{{ version.updated_by.username }}</a>
+        </li>
+    {% endfor %}
+</ul>
+
+<h4 class="mt-5">Assignees</h4>
+<ul>
+    {% for assignee in task.assignees.all %}
+        <li>
+            {{ assignee.username }}
+        </li>
+    {% endfor %}
+</ul>
+
+<h4 class="mt-5">Labels</h4>
+{% for label in task.labels.all %}
+    <span class="badge badge-primary" style="background-color: {{ label.color }}">{{ label.name }}</span>
+{% endfor %}
+
+{% if not task.milestone %}
+{% else %}
+<h4 class="mt-5">Milestone</h4>
+-             <a href="{% url 'milestone-detail' task.project.id task.milestone.id %}">{{ task.milestone }}</a>
+{% endif %}
+
+
+{% if versions.all.first.task_state == 'DONE' %}
+<form class="mt-5 mb-5" action="{% url 'reopen-task' task.project.id task.id %}" method='POST'>
+    {% csrf_token %}
+    <button  class="btn btn-outline-success" type="submit"><span class="badge badge-primary mr-1" style="background-color: white; color: green; border: 1px solid green; ">!</span> Reopen task</button>
+</form>
+{% else %}
+<form class="mt-5 mb-5" action="{% url 'close-task' task.project.id task.id %}" method='POST'>
+    {% csrf_token %}
+    <button  class="btn btn-outline-danger" type="submit"><span class="badge badge-primary mr-1" style="background-color: white; color: red; border: 1px solid red; ">/</span> Close task</button>
+</form>
+{% endif %}
+
+{% endblock content %}
