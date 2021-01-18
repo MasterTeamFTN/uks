@@ -34,6 +34,8 @@ class Task(models.Model):
         tasks = TaskVersion.objects.filter(task=self).order_by('-updated_on')
         return tasks.all().first();
 
+
+
 class TaskState(models.TextChoices):
     TO_DO = 'TO_DO', _('To do')
     IN_PROGRESS = 'IN_PROGRESS', _('In progress')
