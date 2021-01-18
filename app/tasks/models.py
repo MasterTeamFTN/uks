@@ -28,7 +28,7 @@ class Task(models.Model):
 
     def current_state(self):
         tasks = TaskVersion.objects.filter(task=self).order_by('-updated_on')
-        return tasks.all().first().task_state;
+        return tasks.all().first();
 
 class TaskState(models.TextChoices):
     TO_DO = 'TO_DO', _('To do')
