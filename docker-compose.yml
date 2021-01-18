@@ -42,7 +42,7 @@ services:
 
 # services:
 
-# # Postres as a main storage
+# # Postgres as a main storage
 #   db:
 #     restart: always
 #     image: postgres
