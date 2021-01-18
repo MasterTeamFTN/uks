@@ -32,10 +32,10 @@
     {% for history in history %}
         {% if history.task_state %}
             <li class="ml-4">
-                Changed to {{ history.task_state }} on {{ history.updated_on|date:"F d, Y H:i" }},
+                Changed to <b> {{ history.task_state }} </b>on {{ history.updated_on|date:"F d, Y H:i" }},
                 by <a href="#" >{{ history.updated_by.username }}</a>
             </li>
-        {% else %}
+        {% elif history.text %}
             <div class="mt-2 mb-2" style="border: 1px solid #ebebeb; padding: 20px; border-radius: 20px;">
                 <b>{{ history.updated_by.username }}</b> left a comment
                 <br />
@@ -45,6 +45,10 @@
                     {{ history.text | safe }}
                 </div>
             </div>
+        {% else %}
+        <li class="ml-4">
+            <a href="#" >{{ history.updated_by.username }}</a> {{ history.text_change }}
+        </li>
         {% endif %}
     {% endfor %}
 </ul>

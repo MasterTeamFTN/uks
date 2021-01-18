@@ -1,5 +1,5 @@
 from django.shortcuts import render
-from .models import Task, Project, TaskVersion, TaskState, Comment
+from .models import Task, Project, TaskVersion, TaskState, Comment, ChangeHistory
 from django.contrib.auth.models import User
 from django.urls import reverse_lazy
 from django.views.generic import DetailView, CreateView, DeleteView, UpdateView
@@ -121,22 +121,19 @@ def reopen_task(request, project_pk, pk):
     task = Task.objects.get(pk=pk)
     TaskVersion.objects.create(task=task, updated_by=get_current_authenticated_user(), task_state = TaskState.TO_DO)
 
-    context = {
-        'task': task,
-        'versions': TaskVersion.objects.filter(task=task).order_by('-updated_on')
-    }
-
-    return render(request, 'app/task/task_details.html', context)
+    return task_detail_view(request, project_pk, pk)
 
 def task_detail_view(request, project_pk, pk):
     task = Task.objects.get(pk=pk)
     comments = Comment.objects.filter(task=task).order_by('-updated_on')
     versions = TaskVersion.objects.filter(task=task).order_by('-updated_on')
+    change_history = ChangeHistory.objects.filter(task=task).order_by('-updated_on')
+
     context = {
         'task': task,
         'comments': comments,
         'versions': versions,
-        'history':  sorted(chain(versions, comments), key=attrgetter('updated_on'))
+        'history':  sorted(chain(versions, comments, change_history), key=attrgetter('updated_on'))
     }
 
     return render(request, 'app/task/task_details.html', context)
