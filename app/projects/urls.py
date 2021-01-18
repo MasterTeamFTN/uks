@@ -7,4 +7,5 @@ urlpatterns = [
     path('project/<pk>/', views.ProjectDetailView.as_view(), name='project-detail'),
     path('project/<pk>/delete/', views.ProjectDeleteView.as_view(), name='project-delete'),
     path('project/<pk>/contributors/', views.project_contributors, name='project-contributors'),
+    path('project/<pk>/pulse', views.project_pulse, name='project-pulse'),
 ]

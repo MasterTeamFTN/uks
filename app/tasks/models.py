@@ -33,7 +33,9 @@ class Task(models.Model):
     def current_state(self):
         tasks = TaskVersion.objects.filter(task=self).order_by('-updated_on')
         return tasks.all().first();
-
+    def opened_state(self):
+        tasks = TaskVersion.objects.filter(task=self).order_by('-updated_on')
+        return tasks.all().last();
 
 
 class TaskState(models.TextChoices):
