@@ -36,7 +36,20 @@
         </li>
     {% endfor %}
 </ul>
-
+<div class="mt-3 ">
+    {% for comment in comments %}
+    <div class="mb-2" style="border: 1px solid #ebebeb; padding: 20px; border-radius: 20px;">
+        <b>{{ comment.updated_by.username }}</b> left a comment
+        <br />
+        <small>{{ comment.updated_on | naturaltime }}</small>
+        <hr>
+        <div>
+            {{ comment.text | safe }}
+        </div>
+    </div>
+    {% endfor %}
+</div>
+<a href="{% url 'comment' task.project.id task.id %}" class="btn btn-primary btn-sm float-right">Add comment</a>
 <h4 class="mt-5">Assignees</h4>
 <ul>
     {% for assignee in task.assignees.all %}

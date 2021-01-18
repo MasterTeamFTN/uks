@@ -1,10 +1,11 @@
 from django.shortcuts import render
-from .models import Task, Project, TaskVersion, TaskState
+from .models import Task, Project, TaskVersion, TaskState, Comment
 from django.contrib.auth.models import User
 from django.urls import reverse_lazy
 from django.views.generic import DetailView, CreateView, DeleteView, UpdateView
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 from django_currentuser.middleware import get_current_authenticated_user
+from django.urls import reverse
 
 class TaskCreateView(LoginRequiredMixin, UserPassesTestMixin, CreateView):
     template_name = 'app/task/task_form.html'
@@ -127,9 +128,10 @@ def reopen_task(request, project_pk, pk):
 
 def task_detail_view(request, project_pk, pk):
     task = Task.objects.get(pk=pk)
-
+    comments = Comment.objects.filter(task=task).order_by('-updated_on')
     context = {
         'task': task,
+        'comments': comments,
         'versions': TaskVersion.objects.filter(task=task).order_by('-updated_on')
     }
 
@@ -145,3 +147,17 @@ def task_contributors(request, pk):
     }
 
     return render(request, 'app/task/contributors.html', context=context)
+
+class CommentCreateView(LoginRequiredMixin, UserPassesTestMixin, CreateView):
+    template_name = 'app/task/comment_form.html'
+    model = Comment
+    fields = ['text']
+    def form_valid(self, form):
+        task_id = self.kwargs.get('pk')
+        form.instance.task = Task.objects.get(pk=task_id)
+        return super().form_valid(form)
+
+    def test_func(self):
+        task_id = self.kwargs.get('pk')
+        task = Task.objects.get(pk=task_id)
+        return self.request.user in task.project.contributors.all()

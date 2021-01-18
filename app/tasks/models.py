@@ -52,3 +52,18 @@ class TaskVersion(models.Model):
         choices=TaskState.choices,
         blank=True, null=True
     )
+
+class Comment(models.Model):
+    task = models.ForeignKey(Task, on_delete=models.CASCADE, default=None)
+    updated_on = models.DateTimeField(default=timezone.now)
+    updated_by = models.ForeignKey(User, on_delete=models.CASCADE)
+    text = RichTextField(blank=True, null=True)
+
+    def get_absolute_url(self):
+        return reverse('task-detail', kwargs={
+            'project_pk': self.task.project.pk,
+            'pk': self.task.pk
+        })
+    def save(self, *args, **kwargs):
+        self.updated_by = get_current_authenticated_user()
+        super(Comment, self).save(*args, **kwargs)
