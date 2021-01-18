@@ -6,6 +6,8 @@ from django.views.generic import DetailView, CreateView, DeleteView, UpdateView
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 from django_currentuser.middleware import get_current_authenticated_user
 from django.urls import reverse
+from itertools import chain
+from operator import attrgetter
 
 class TaskCreateView(LoginRequiredMixin, UserPassesTestMixin, CreateView):
     template_name = 'app/task/task_form.html'
@@ -129,10 +131,12 @@ def reopen_task(request, project_pk, pk):
 def task_detail_view(request, project_pk, pk):
     task = Task.objects.get(pk=pk)
     comments = Comment.objects.filter(task=task).order_by('-updated_on')
+    versions = TaskVersion.objects.filter(task=task).order_by('-updated_on')
     context = {
         'task': task,
         'comments': comments,
-        'versions': TaskVersion.objects.filter(task=task).order_by('-updated_on')
+        'versions': versions,
+        'history':  sorted(chain(versions, comments), key=attrgetter('updated_on'))
     }
 
     return render(request, 'app/task/task_details.html', context)
