@@ -21,6 +21,7 @@
 {% endif %}
 
 <small><b>{{ versions.all.last.updated_by.username  }} </b> opened this issue {{ versions.all.last.updated_on | naturaltime }}</small>
+<a href="{% url 'task-update' task.project.id task.id %}" class="btn btn-primary btn-sm float-right">Update</a>
 <hr />
 <h4 class="mt-5">Description</h4>
 <div class="mt-1">
@@ -55,6 +56,7 @@
 <h4 class="mt-5">Milestone</h4>
 -             <a href="{% url 'milestone-detail' task.project.id task.milestone.id %}">{{ task.milestone }}</a>
 {% endif %}
+
 
 {% if versions.all.first.task_state == 'DONE' %}
 <form class="mt-5 mb-5" action="{% url 'reopen-task' task.project.id task.id %}" method='POST'>

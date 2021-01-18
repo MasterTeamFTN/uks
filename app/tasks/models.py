@@ -21,7 +21,10 @@ class Task(models.Model):
         return self.name
 
     def get_absolute_url(self):
-        return reverse('task-detail', kwargs={'pk': self.pk})
+        return reverse('task-detail', kwargs={
+            'project_pk': self.project.pk,
+            'pk': self.pk
+        })
     def save(self, *args, **kwargs):
         super(Task, self).save(*args, **kwargs)
         TaskVersion.objects.create(task=self, updated_by=get_current_authenticated_user(), task_state=TaskState.TO_DO)

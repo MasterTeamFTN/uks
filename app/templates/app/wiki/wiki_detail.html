@@ -5,11 +5,11 @@
     <h4>
         <a href="{% url 'project-detail' object.project.id %}">{{ object.project.name }}</a>
         -
-        <a href="{% url 'wiki-list' object.project.id %}">Wikis</a> 
-        - 
+        <a href="{% url 'wiki-list' object.project.id %}">Wikis</a>
+        -
         {{ object.title }}
     </h4>
-    
+
     <div style="margin-left: auto;">
         <a href="{% url 'wiki-history' wiki.project.id wiki.id %}" class="btn btn-secondary btn-sm">History</a>
         <a href="{% url 'wiki-update' object.project.id object.id %}" class="btn btn-primary btn-sm">Update</a>

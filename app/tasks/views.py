@@ -2,7 +2,7 @@ from django.shortcuts import render
 from .models import Task, Project, TaskVersion, TaskState
 from django.contrib.auth.models import User
 from django.urls import reverse_lazy
-from django.views.generic import DetailView, CreateView, DeleteView
+from django.views.generic import DetailView, CreateView, DeleteView, UpdateView
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 from django_currentuser.middleware import get_current_authenticated_user
 
@@ -19,6 +19,15 @@ class TaskCreateView(LoginRequiredMixin, UserPassesTestMixin, CreateView):
         project_id = self.kwargs.get('project_pk')
         project = Project.objects.get(pk=project_id)
         return self.request.user in project.contributors.all()
+
+class TaskUpdateView(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
+    template_name = 'app/task/task_form.html'
+    model = Task
+    fields = ['title', 'description', 'labels', 'assignees', 'milestone']
+
+    def test_func(self):
+        task = self.get_object()
+        return self.request.user in task.assignees.all()
 
 def task_list_view(request, project_pk):
     project = Project.objects.get(pk=project_pk)
