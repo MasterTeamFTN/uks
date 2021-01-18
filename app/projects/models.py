@@ -7,6 +7,7 @@ class Project(models.Model):
     name = models.CharField(max_length=100)
     description = models.TextField()
     created_on = models.DateTimeField(default=timezone.now)
+    github_url = models.CharField(max_length=512, default='')
     updated_on = models.DateTimeField(default=timezone.now)
     is_public = models.BooleanField(default=True)
     contributors = models.ManyToManyField(User)

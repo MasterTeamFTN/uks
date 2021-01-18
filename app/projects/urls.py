@@ -7,4 +7,6 @@ urlpatterns = [
     path('project/<pk>/', views.ProjectDetailView.as_view(), name='project-detail'),
     path('project/<pk>/delete/', views.ProjectDeleteView.as_view(), name='project-delete'),
     path('project/<pk>/contributors/', views.project_contributors, name='project-contributors'),
+    path('project/<pk>/branches/', views.project_branches, name='project-branches'),
+    path('project/<pk>/branches/commits/', views.project_commits, name='project-commits'),
 ]

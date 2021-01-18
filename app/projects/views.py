@@ -4,6 +4,8 @@ from django.contrib.auth.models import User
 from django.urls import reverse_lazy
 from django.views.generic import DetailView, CreateView, DeleteView
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
+from ..utils.url_utils import get_user_and_repo
+import requests
 
 def projects(request):
     context = {
@@ -28,8 +30,8 @@ class ProjectDeleteView(LoginRequiredMixin, UserPassesTestMixin, DeleteView):
 
 class ProjectCreateView(LoginRequiredMixin, CreateView):
     template_name = 'app/project/project_form.html'
-    model = Project 
-    fields = ['name', 'description', 'is_public', 'contributors']
+    model = Project
+    fields = ['name', 'description', 'github_url', 'is_public', 'contributors']
 
     def form_valid(self, form):
         form.instance.author = self.request.user
@@ -45,3 +47,39 @@ def project_contributors(request, pk):
     }
 
     return render(request, 'app/project/contributors.html', context=context)
+
+def project_branches(request, pk):
+    project = Project.objects.get(pk=pk)
+    github_user, github_repo = get_user_and_repo(project.github_url)
+
+    branches_url = f'https://api.github.com/repos/{github_user}/{github_repo}/branches'
+
+    response = requests.get(branches_url)
+    branches = response.json()
+
+    branch_names = []
+    for branch in branches:
+        branch_names.append(branch['name'])
+
+    context = {
+        'project_id': project.pk,
+        'project_name': project.name,
+        'branches': branch_names
+    }
+
+    return render(request, 'app/project/branches.html', context=context)
+
+def project_commits(request, pk):
+    project = Project.objects.get(pk=pk)
+    branch_name = request.GET.get('branch', '')
+    print(branch_name)
+    commits = []
+
+    context = {
+        'project_id': project.pk,
+        'project_name': project.name,
+        'branch_name': branch_name,
+        'commits': commits
+    }
+
+    return render(request, 'app/project/commits.html', context=context)

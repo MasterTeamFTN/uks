@@ -1,0 +1,20 @@
+{% extends "app/base.html" %}
+
+{% block content %}
+
+<h4>
+    <a href="{% url 'project-detail' project_id %}">{{ project_name }}</a> - Branches
+</h4>
+
+<ul>
+    {% for branch in branches %}
+    <li>
+        <a href="{% url 'project-commits' project_id %}?branch={{ branch }}">{{ branch }} - commits</a>
+    </li>
+    {% empty %}
+    <p>This project doesn't have any branches</p>
+    {% endfor %}
+</ul>
+
+{% endblock content %}
+
