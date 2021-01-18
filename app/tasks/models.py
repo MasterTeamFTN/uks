@@ -27,7 +27,8 @@ class Task(models.Model):
         })
     def save(self, *args, **kwargs):
         super(Task, self).save(*args, **kwargs)
-        TaskVersion.objects.create(task=self, updated_by=get_current_authenticated_user(), task_state=TaskState.TO_DO)
+        if self._state.adding:
+            TaskVersion.objects.create(task=self, updated_by=get_current_authenticated_user(), task_state=TaskState.TO_DO)
 
     def current_state(self):
         tasks = TaskVersion.objects.filter(task=self).order_by('-updated_on')
