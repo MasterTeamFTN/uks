@@ -134,3 +134,6 @@ CRISPY_TEMPLATE_PACK = 'bootstrap4'
 
 # URL where user will be redirected after login
 LOGIN_REDIRECT_URL = 'app-home'
+
+# Default login path
+LOGIN_URL ='users-login'

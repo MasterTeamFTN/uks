@@ -1,0 +1,30 @@
+{% extends "app/base.html" %}
+
+{% block content %}
+
+    <div style="display: flex;">
+        <h4>All organizations</h4>
+
+        {% if user.is_authenticated %}
+        <a href="{% url 'organization-create' %}" class="btn btn-primary mb-2" style="margin-left: auto;">New organization</a>
+        {% endif %}
+    </div>
+
+{% for org in organizations %}
+    <article class="media content-section">
+        <div class="media-body" style="display: flex;">
+            <div>
+                <a class="mr-2" href="{% url 'organization-detail' org.pk %}">{{ org.name }}</a>
+                <small class="text-muted">Created on {{ org.created_on|date:"F d, Y"}}</small>
+                <p>{{ org.description }}</p>
+            </div>
+        </div>
+    </article>
+{% empty %}
+    <p>
+        Currently there are 0 created organizations
+    </p>
+    <a href="{% url 'organization-create' %}">Create first organization</a>
+{% endfor %}
+
+{% endblock content %}
