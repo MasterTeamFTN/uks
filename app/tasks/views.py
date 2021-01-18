@@ -86,12 +86,7 @@ def close_task(request, project_pk, pk):
     task = Task.objects.get(pk=pk)
     TaskVersion.objects.create(task=task, updated_by=get_current_authenticated_user(), task_state = TaskState.DONE)
 
-    context = {
-        'task': task,
-        'versions': TaskVersion.objects.filter(task=task).order_by('-updated_on')
-    }
-
-    return render(request, 'app/task/task_details.html', context)
+    return task_detail_view(request, project_pk, pk)
 
 def progress_task(request, project_pk, pk):
     task = Task.objects.get(pk=pk)
