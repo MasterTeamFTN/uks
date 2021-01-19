@@ -1,11 +1,11 @@
 from django.shortcuts import render
-from .models import Project
+from .models import Project, Branch, Commit
+from django.contrib import messages
 from django.contrib.auth.models import User
 from django.urls import reverse_lazy
 from django.views.generic import DetailView, CreateView, DeleteView
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
-from ..utils.url_utils import get_user_and_repo
-import requests
+from ..utils.github_utils import get_branches_and_commits
 
 def projects(request):
     context = {
@@ -50,21 +50,12 @@ def project_contributors(request, pk):
 
 def project_branches(request, pk):
     project = Project.objects.get(pk=pk)
-    github_user, github_repo = get_user_and_repo(project.github_url)
-
-    branches_url = f'https://api.github.com/repos/{github_user}/{github_repo}/branches'
-
-    response = requests.get(branches_url)
-    branches = response.json()
-
-    branch_names = []
-    for branch in branches:
-        branch_names.append(branch['name'])
+    branches = Branch.objects.filter(project=project)
 
     context = {
         'project_id': project.pk,
         'project_name': project.name,
-        'branches': branch_names
+        'branches': branches
     }
 
     return render(request, 'app/project/branches.html', context=context)
@@ -72,8 +63,8 @@ def project_branches(request, pk):
 def project_commits(request, pk):
     project = Project.objects.get(pk=pk)
     branch_name = request.GET.get('branch', '')
-    print(branch_name)
-    commits = []
+    branch = Branch.objects.get(name=branch_name, project=project)
+    commits = Commit.objects.filter(branch=branch).all()
 
     context = {
         'project_id': project.pk,
@@ -83,3 +74,22 @@ def project_commits(request, pk):
     }
 
     return render(request, 'app/project/commits.html', context=context)
+
+def project_refresh_branches(request, pk):
+    project = Project.objects.get(pk=pk)
+
+    Branch.objects.filter(project=project).delete()
+    new_branches = get_branches_and_commits(project)
+
+    context = {
+        'project_id': project.pk,
+        'project_name': project.name,
+        'branches': new_branches
+    }
+
+    if new_branches is None:
+        messages.warning(request, 'Github API error. Can\'t update branches')
+    else:
+        messages.success(request, 'Branches and commits were successfully updated')
+
+    return render(request, 'app/project/branches.html', context=context)
