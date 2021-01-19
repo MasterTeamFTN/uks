@@ -17,10 +17,7 @@ def get_branches_and_commits(project):
     for branch in branches:
         created_branch = Branch.objects.create(name=branch['name'], last_commit_sha=branch['commit']['sha'], project=project)
         created_branches.append(created_branch)
-
-        commit_sha = branch['commit']['sha']
-        commits_url = f'https://api.github.com/repos/{github_user}/{github_repo}/commits?per_page=10&sha={commit_sha}'
-        _get_and_save_commits(commits_url, created_branch)
+        _get_and_save_commits(github_user, github_repo, created_branch)
 
     return created_branches
 
@@ -34,18 +31,21 @@ def _get_user_and_repo(url):
 
     return user, repo
 
-def _get_and_save_commits(url, branch):
+def _get_and_save_commits(github_user, github_repo, branch):
+    url = f'https://api.github.com/repos/{github_user}/{github_repo}/commits?per_page=100&sha={branch.last_commit_sha}'
     response = requests.get(url)
     commits = response.json()
 
-    # TODO: ovo treba raditi i sa paginacijom :(
+    if response.status_code != 200:
+        return
+
+    # TODO: dobavljanje sa paginacijom
     for commit in commits:
         try:
-            user = User.objects.get(email=commit['commit']['email'])
+            user = User.objects.get(email=commit['commit']['author']['email'])
         except:
             user = None
 
-        print(commit)
         Commit.objects.create(
             sha=commit['sha'],
             message=commit['commit']['message'],
@@ -54,4 +54,3 @@ def _get_and_save_commits(url, branch):
             datetime=commit['commit']['author']['date'],
             author=user
         )
-
