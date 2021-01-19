@@ -13,11 +13,11 @@ def projects(request):
 
 class ProjectDetailView(DetailView):
     template_name = 'app/project/project_detail.html'
-    model = Project 
+    model = Project
 
 class ProjectDeleteView(LoginRequiredMixin, UserPassesTestMixin, DeleteView):
     template_name = 'app/project/project_confirm_delete.html'
-    model = Project 
+    model = Project
     success_url = '/'
 
     def test_func(self):
@@ -28,17 +28,21 @@ class ProjectDeleteView(LoginRequiredMixin, UserPassesTestMixin, DeleteView):
 
 class ProjectCreateView(LoginRequiredMixin, CreateView):
     template_name = 'app/project/project_form.html'
-    model = Project 
+    model = Project
     fields = ['name', 'description', 'is_public', 'contributors']
 
     def form_valid(self, form):
         form.instance.author = self.request.user
+
+        if Project.objects.filter(name=form.instance.name).exists():
+            form.add_error('name', 'This name already exists')
+            return super().form_invalid(form)
         return super().form_valid(form)
 
 def project_contributors(request, pk):
     project = Project.objects.get(pk=pk)
 
-    context = { 
+    context = {
         'project_id': project.id,
         'project_name': project.name,
         'contributors': project.contributors.all()

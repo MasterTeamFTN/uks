@@ -14,7 +14,7 @@ class LabelUpdateView(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
         project_id = self.kwargs.get('project_pk')
         project = Project.objects.get(pk=project_id)
 
-        if Label.objects.filter(name=form.instance.name, project=project).exists():
+        if form.instance.name != self.get_object().name and Label.objects.filter(name=form.instance.name, project=project).exists():
             form.add_error('name', 'This name already exists')
             return super().form_invalid(form)
 
