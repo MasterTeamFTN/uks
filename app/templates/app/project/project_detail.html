@@ -6,6 +6,7 @@
     <article class="media content-section">
         <div class="media-body">
             <div class="article-metadata">
+                <a href="{% url 'project-branches' project.id %}" class="mr-2">Branches & Commits</a>
                 <a href="{% url 'wiki-list' project.id %}" class="mr-2">Wiki</a>
                 <a href="{% url 'label-list' project.id %}" class="mr-2">Labels</a>
                 <a href="{% url 'board' project.id %}" class="mr-2">Board</a>
