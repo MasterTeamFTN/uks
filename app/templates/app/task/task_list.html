@@ -3,15 +3,19 @@
 
 {% block content %}
     <div style="display: flex;">
-        <h4 class="mt-5 mb-3">
+        <h4 class="mb-3">
             <a href="{% url 'project-detail' project.id %}">{{ project.name }}</a>
             - Tasks
         </h4>
 
-        <a href="{% url 'task-create' project.pk %}" class="btn btn-primary mb-2 mt-5" style="margin-left: auto;">New</a>
+        {% if user in project.contributors.all %}
+            <a href="{% url 'task-create' project.pk %}" class="btn btn-primary mb-2" style="margin-left: auto;">New</a>
+        {% endif %}
     </div>
+
     <span class="badge badge-primary mr-1 " style="background-color: white; color: green; border: 1px solid green; ">!</span> Open
     <span class="badge badge-primary mr-1 mb-3" style="background-color: white; color: red; border: 1px solid red; ">/</span> Closed
+
     {% for task in tasks %}
     <div class="row mt-1" style="border: 1px solid #ebebeb; padding: 20px; border-radius: 20px;">
         <div class="col-md-2">
@@ -39,12 +43,15 @@
         </div>
     </div>
     {% empty %}
-        <h3 class="mt-5">                    You haven’t created any Tasks.
-        </h3>
+        {% if user in project.contributors.all %}
+            <h3>You haven’t created any Tasks.</h3>
 
-        <tr>
-            <td><a href="{% url 'task-create' project.pk %}"> Create your first task</a></td>
-        </tr>
+            <tr>
+                <td><a href="{% url 'task-create' project.pk %}">Create your first task</a></td>
+            </tr>
+        {% else %}
+            <p>This project doesn't have any tasks.</p>
+        {% endif %}
     {% endfor %}
     <hr>
 

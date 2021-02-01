@@ -7,8 +7,8 @@
             - Labels
         </h4>
 
-        {% if user.is_authenticated %}
-        <a href="{% url 'label-create' project.pk %}" class="btn btn-primary mb-2" style="margin-left: auto;">New</a>
+        {% if user in project.contributors.all %}
+            <a href="{% url 'label-create' project.pk %}" class="btn btn-primary mb-2" style="margin-left: auto;">New</a>
         {% endif %}
     </div>
 
@@ -19,19 +19,20 @@
                     <td style="background-color: {{label.color}}">{{ label.name }}</td>
                     <td>{{ label.description }}</td>
 
-                    {% if user.is_authenticated %}
-                    <td><a class="btn btn-primary btn-sm mt-1 mb-1" href="{% url 'label-update' label.project.id label.id%}">Edit</a></td>
-                    <td><a class="btn btn-danger btn-sm mt-1 mb-1" href="{% url 'label-delete' label.project.id label.id%}">Delete</a></td>
+                    {% if user in project.contributors.all %}
+                        <td><a class="btn btn-primary btn-sm" href="{% url 'label-update' label.project.id label.id%}">Edit</a></td>
+                        <td><a class="btn btn-danger btn-sm" href="{% url 'label-delete' label.project.id label.id%}">Delete</a></td>
                     {% endif %}
                 </tr>
             {% empty %}
-                <p>
-                    You can manage your work on GitHub by creating labels to categorize issues and pull requests.
-                    You can apply labels in the repository the label was created in.
-                </p>
-                <tr>
-                    <td><a href="{% url 'label-create' project.pk %}"> Create your first label</a></td>
-                </tr>
+                {% if user in project.contributors.all %}
+                    <p>You can manage your work on UKS Lab by creating labels to categorize tasks.</p>
+                    <tr>
+                        <td><a href="{% url 'label-create' project.pk %}"> Create your first label</a></td>
+                    </tr>
+                {% else %}
+                    <p>This project doesn't have any labels</p>
+                {% endif %}
             {% endfor %}
         </tbody>
     </table>
