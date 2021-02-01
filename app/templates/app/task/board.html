@@ -3,15 +3,19 @@
 
 {% block content %}
     <div style="display: flex;">
-        <h4 class="mt-5 mb-3">
+        <h4 class="mb-3">
             <a href="{% url 'project-detail' project.id %}">{{ project.name }}</a>
             - Board
         </h4>
 
-        <a href="{% url 'task-create' project.pk %}" class="btn btn-primary mb-2 mt-5" style="margin-left: auto;">New task</a>
+        {% if user in project.contributors.all %}
+          <a href="{% url 'task-create' project.pk %}" class="btn btn-primary mb-2" style="margin-left: auto;">New task</a>
+        {% endif %}
     </div>
+
     <span class="badge badge-primary mr-1 " style="background-color: white; color: green; border: 1px solid green; ">!</span> Open
     <span class="badge badge-primary mr-1 mb-3" style="background-color: white; color: red; border: 1px solid red; ">/</span> Closed
+    
     <div class="row mt-1" style="border: 1px solid #ebebeb; padding: 20px; border-radius: 20px;">
       <div class="col-md-3">
         <div class="row">
@@ -43,8 +47,9 @@
                 {% endif %}
                 <br />
 
-                <a href="{% url 'progress-task' project.pk task.pk %}" class="btn btn-sm btn-primary mb-2 mt-1" style="margin-left: auto;"> > </a>
-
+                {% if user in project.contributors.all %}
+                  <a href="{% url 'progress-task' project.pk task.pk %}" class="btn btn-sm btn-primary mb-2 mt-1" style="margin-left: auto;"> > </a>
+                {% endif %}
             </div>
         </div>
         {% endfor %}
@@ -78,8 +83,11 @@
                 Milestone - <a href="{% url 'milestone-detail' project.id task.milestone.id %}">{{ task.milestone }}</a>
                 {% endif %}
                 <br />
-                <a href="{% url 'todo-task' project.pk task.pk %}" class="btn btn-sm btn-primary mb-2 mt-1" style="margin-left: auto;"> < </a>
-                <a href="{% url 'review-task' project.pk task.pk %}" class="btn btn-sm btn-primary mb-2 mt-1" style="margin-left: auto;"> > </a>
+                
+                {% if user in project.contributors.all %}
+                  <a href="{% url 'todo-task' project.pk task.pk %}" class="btn btn-sm btn-primary mb-2 mt-1" style="margin-left: auto;"> < </a>
+                  <a href="{% url 'review-task' project.pk task.pk %}" class="btn btn-sm btn-primary mb-2 mt-1" style="margin-left: auto;"> > </a>
+                {% endif %}
             </div>
         </div>
         {% endfor %}
@@ -113,8 +121,11 @@
                 Milestone - <a href="{% url 'milestone-detail' project.id task.milestone.id %}">{{ task.milestone }}</a>
                 {% endif %}
                 <br />
-                <a href="{% url 'progress-task' project.pk task.pk %}" class="btn btn-sm btn-primary mb-2 mt-1" style="margin-left: auto;"> < </a>
-                <a href="{% url 'done-task' project.pk task.pk %}" class="btn btn-sm btn-primary mb-2 mt-1" style="margin-left: auto;"> > </a>
+
+                {% if user in project.contributors.all %}
+                  <a href="{% url 'progress-task' project.pk task.pk %}" class="btn btn-sm btn-primary mb-2 mt-1" style="margin-left: auto;"> < </a>
+                  <a href="{% url 'done-task' project.pk task.pk %}" class="btn btn-sm btn-primary mb-2 mt-1" style="margin-left: auto;"> > </a>
+                {% endif %}
             </div>
         </div>
         {% endfor %}
@@ -148,7 +159,10 @@
                 Milestone - <a href="{% url 'milestone-detail' project.id task.milestone.id %}">{{ task.milestone }}</a>
                 {% endif %}
                 <br />
-                <a href="{% url 'review-task' project.pk task.pk %}" class="btn btn-sm btn-primary mb-2 mt-1" style="margin-left: auto;"> < </a>
+
+                {% if user in project.contributors.all %}
+                  <a href="{% url 'review-task' project.pk task.pk %}" class="btn btn-sm btn-primary mb-2 mt-1" style="margin-left: auto;"> < </a>
+                {% endif %}
             </div>
         </div>
         {% endfor %}

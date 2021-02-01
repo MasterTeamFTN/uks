@@ -3,13 +3,16 @@
 
 {% block content %}
 <div>
-    <a href="{% url 'milestone-update' object.project.pk object.pk %}" class="btn btn-primary mb-2 float-right" style="margin-left: auto;">Edit</a>
+    {% if user in object.project.contributors.all %}
+        <a href="{% url 'milestone-update' object.project.pk object.pk %}" class="btn btn-primary mb-2 float-right" style="margin-left: auto;">Edit</a>
+    {% endif %}
 
-    <hr class="mt-3">
     <div class="row mb-3 mt-3">
         <h4>
             <a href="{% url 'project-detail' object.project.id %}">{{ object.project.name }}</a>
-            - Milestone
+            -
+            <a href="{% url 'milestone-list' object.project.id %}">Milestones</a>
+            -
             {{ object.title }}
         </h4>
     </div>
