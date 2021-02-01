@@ -29,14 +29,30 @@
 </div>
 <h4 class="mt-5">History</h4>
 <ul class="mt-2">
-    {% for version in versions %}
-        <li>
-            Changed to {{ version.task_state }} on {{ version.updated_on|date:"F d, Y H:i" }},
-            by <a href="#" >{{ version.updated_by.username }}</a>
+    {% for history in history %}
+        {% if history.task_state %}
+            <li class="ml-4">
+                Changed to <b> {{ history.task_state }} </b>on {{ history.updated_on|date:"F d, Y H:i" }},
+                by <a href="#" >{{ history.updated_by.username }}</a>
+            </li>
+        {% elif history.text %}
+            <div class="mt-2 mb-2" style="border: 1px solid #ebebeb; padding: 20px; border-radius: 20px;">
+                <b>{{ history.updated_by.username }}</b> left a comment
+                <br />
+                <small>{{ history.updated_on | naturaltime }}</small>
+                <hr>
+                <div>
+                    {{ history.text | safe }}
+                </div>
+            </div>
+        {% else %}
+        <li class="ml-4">
+            <a href="#" >{{ history.updated_by.username }}</a> {{ history.text_change }}
         </li>
+        {% endif %}
     {% endfor %}
 </ul>
-
+<a href="{% url 'comment' task.project.id task.id %}" class="btn btn-primary btn-sm float-right">Add comment</a>
 <h4 class="mt-5">Assignees</h4>
 <ul>
     {% for assignee in task.assignees.all %}
