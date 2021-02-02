@@ -1,11 +1,3 @@
-# FROM python:3.6
-# ENV PYTHONUNBUFFERED 1
-# RUN mkdir /code
-# WORKDIR /code
-# COPY requirements.txt /code/
-# RUN pip install -r requirements.txt
-# COPY . /code/
-
 FROM python:3.6
 ENV PYTHONUNBUFFERED 1
 
@@ -18,12 +10,3 @@ RUN pip uninstall psycopg2
 RUN pip install --upgrade wheel
 RUN pip install --upgrade setuptools
 RUN pip install -r requirements.txt
-
-RUN ["chmod", "+x", "wait_for_postgres.sh"]
-RUN ["chmod", "+x", "start.sh"]
-
-# Server, just for Docker image, not for compose
-# EXPOSE 8000
-# STOPSIGNAL SIGINT
-# ENTRYPOINT ["python", "manage.py"]
-# CMD ["runserver", "0.0.0.0:8000"]
