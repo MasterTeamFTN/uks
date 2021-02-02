@@ -18,3 +18,9 @@ urlpatterns += wiki_urls
 urlpatterns += milestone_urls
 urlpatterns += task_urls
 urlpatterns += organization_urls
+
+# Error handlers
+handler400 = 'app.views.error_400'
+handler403 = 'app.views.error_403'
+handler404 = 'app.views.error_404'
+handler500 = 'app.views.error_500'
