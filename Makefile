@@ -25,4 +25,8 @@ run: ## Run the Django server
 shell: ## Run the Django shell command
 	python3 manage.py shell
 
+.PHONY: test
+test: ## Run the Django test command
+	python3 manage.py test
+
 start: install migrate run ## Install requirements, apply migrations, then start development server
