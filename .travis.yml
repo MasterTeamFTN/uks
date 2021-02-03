@@ -1,15 +1,10 @@
-os: windows
-language: sh
-python: '3.6'
-before_install:
-  - choco install python --version 3.6.0
-  - easy_install --upgrade pip
-  # - wget https://bootstrap.pypa.io/2.7/get-pip.py
-  # - python get-pip.py
+language: python
+python:
+  - "3.6"
+# command to install dependencies
 install:
   - pip install -r requirements.txt
-env:
-  - DJANGO_VERSION=3.1.5
+# command to run tests
 script:
-  - python manage.py test
+  - python tests.py
 if: (type = pull_request AND branch == dev)
