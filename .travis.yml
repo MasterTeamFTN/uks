@@ -6,7 +6,6 @@ before_install:
       - export PATH="/c/Python36:/c/Python36/Scripts:$PATH"
 # command to install dependencies
 before_script:
-  - easy_install distribute
   - pip install -r requirements.txt
 # command to run tests
 script:
@@ -18,4 +17,4 @@ os:
 #   only:
 #     - master
 
-if: (type = push AND branch IN (feature/travis, dev)) OR (type = pull_request AND branch == dev)
+if: (type = pull_request AND branch == dev)
