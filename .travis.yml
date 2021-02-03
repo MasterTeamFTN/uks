@@ -1,23 +1,15 @@
 os: windows
 language: sh
-python: "3.6"
-
+python: '3.6'
 before_install:
   - choco install python3
-  - export PATH="/c/Python36:/c/Python36/Scripts:$PATH"
+  - 'export PATH="/c/Python36:/c/Python36/Scripts:$PATH"'
+  - python get-pip.py
   - python -m pip install --upgrade pip
-
-# install dependencies
 install:
-- pip install -r requirements.txt
-
+  - pip install -r requirements.txt
 env:
-- DJANGO_VERSION=3.1.5
-- DJANGO_SETTINGS_MODULE='UKS.settings'
-
-# run test scripts
+  - DJANGO_VERSION=3.1.5
 script:
-- python src/manage.py test 
-
-
+  - python manage.py test
 if: (type = pull_request AND branch == dev)
