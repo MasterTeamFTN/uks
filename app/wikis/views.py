@@ -1,4 +1,4 @@
-from django.shortcuts import render
+from django.shortcuts import render, get_object_or_404
 from .models import Wiki, WikiVersion
 from ..projects.models import Project
 from django.urls import reverse_lazy
@@ -6,7 +6,7 @@ from django.views.generic import DetailView, CreateView, UpdateView, DeleteView
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 
 def wikis_list_view(request, project_pk):
-    project = Project.objects.get(pk=project_pk)
+    project = get_object_or_404(Project, pk=project_pk)
 
     context = {
         'wikis': Wiki.objects.filter(project=project),
@@ -26,12 +26,12 @@ class WikiCreateView(LoginRequiredMixin, UserPassesTestMixin, CreateView):
 
     def form_valid(self, form):
         project_id = self.kwargs.get('project_pk')
-        form.instance.project = Project.objects.get(pk=project_id)
+        form.instance.project = get_object_or_404(Project, pk=project_id)
         return super().form_valid(form)
 
     def test_func(self):
         project_id = self.kwargs.get('project_pk')
-        project = Project.objects.get(pk=project_id)
+        project = get_object_or_404(Project, pk=project_id)
         return self.request.user in project.contributors.all()
 
 class WikiDeleteView(LoginRequiredMixin, UserPassesTestMixin, DeleteView):
@@ -57,7 +57,7 @@ class WikiUpdateView(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
 
 
 def wiki_versions_list_view(request, project_pk, pk):
-    wiki = Wiki.objects.get(pk=pk)
+    wiki = get_object_or_404(Wiki, pk=pk)
 
     context = {
         'wiki': wiki,

@@ -5,6 +5,9 @@ import requests
 def get_branches_and_commits(project):
     github_user, github_repo = _get_user_and_repo(project.github_url)
 
+    if github_user == None and github_repo == None:
+        return None
+
     branches_url = f'https://api.github.com/repos/{github_user}/{github_repo}/branches'
     response = requests.get(branches_url)
     branches = response.json()
@@ -25,9 +28,12 @@ def _get_user_and_repo(url):
     """
     Example github url: https://github.com/MasterTeamFTN/uks
     """
-    url_split = url.split('/')
-    user = url_split[3]
-    repo = url_split[4]
+    try:
+        url_split = url.split('/')
+        user = url_split[3]
+        repo = url_split[4]
+    except:
+        return None, None
 
     return user, repo
 
