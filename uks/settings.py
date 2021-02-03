@@ -26,7 +26,7 @@ SECRET_KEY = 'qpnqyhza1$!%!w*rcsvfua+mz0ux+61f))l5g66eq7wvuh1_26'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['*']
 
 
 # Application definition
@@ -96,9 +96,22 @@ DATABASES = {
     #     },
     # }
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
+        'ENGINE': 'django.db.backends.postgresql',
+        'NAME': 'postgres',
+        'USER': 'postgres',
+        'PASSWORD': 'postgres',
+        # 'HOST': '127.0.0.1',
+        'HOST': 'db',
+        # 'HOST': 'localhost',
+        'PORT': 5432,
+        'OPTIONS': {
+            'options': '-c search_path=django,public'
+        },
     }
+    # 'default': {
+    #     'ENGINE': 'django.db.backends.sqlite3',
+    #     'NAME': BASE_DIR / 'db.sqlite3',
+    # }
 }
 
 
@@ -150,3 +163,18 @@ LOGIN_REDIRECT_URL = 'app-home'
 
 # Default login path
 LOGIN_URL ='users-login'
+
+# CACHES = {
+#     "default": {
+#         "BACKEND": "django_redis.cache.RedisCache",
+#         "LOCATION": "redis://redis:6379",
+#         "OPTIONS": {
+#             "CLIENT_CLASS": "django_redis.client.DefaultClient"
+#         }
+#     }
+# }
+
+# Cache time to live is 15 minutes.
+# CACHE_TTL = 60 * 15
+# SESSION_ENGINE = "django.contrib.sessions.backends.cache"
+# SESSION_CACHE_ALIAS = "default"
