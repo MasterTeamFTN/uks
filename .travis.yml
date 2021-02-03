@@ -18,4 +18,4 @@ os:
 #   only:
 #     - master
 
-if: (type = push AND branch IN (feature/travis, dev))
+if: (type = pull_request AND branch == dev)
