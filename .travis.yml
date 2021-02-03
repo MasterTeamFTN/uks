@@ -5,7 +5,7 @@ python: "3.6"
 before_install:
   - choco install python3
   - export PATH="/c/Python36:/c/Python36/Scripts:$PATH"
-  - python -m pip install --upgrade pip wheel
+  - python -m pip install --upgrade pip
 
 # install dependencies
 install:
