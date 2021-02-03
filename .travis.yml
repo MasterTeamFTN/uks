@@ -2,10 +2,8 @@ os: windows
 language: sh
 python: '3.6'
 before_install:
-  - choco install python3
-  - 'export PATH="/c/Python36:/c/Python36/Scripts:$PATH"'
-  # - python get-pip.py
-  # - python -m pip install --upgrade pip
+  - choco install python --version 3.6.0
+  - python -m pip install --upgrade pip
 install:
   - pip install -r requirements.txt
 env:
