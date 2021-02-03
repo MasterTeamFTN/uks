@@ -3,9 +3,9 @@ language: sh
 python: '3.6'
 before_install:
   - choco install python --version 3.6.0
-  - python -m pip uninstall pip setuptools
-  - wget https://bootstrap.pypa.io/2.7/get-pip.py
-  - python get-pip.py
+  - c:\Python36\Scripts\easy_install.exe --upgrade pip
+  # - wget https://bootstrap.pypa.io/2.7/get-pip.py
+  # - python get-pip.py
 install:
   - pip install -r requirements.txt
 env:
