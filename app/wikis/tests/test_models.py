@@ -6,7 +6,9 @@ from ...projects.models import Project
 WIKI_PAGE_NAME = 'Wiki home page'
 
 class TestWikiModels(TestCase):
-    pass
+    
+    def test(self):
+        self.assertEquals(1, 1)
 
     # TODO: Implement this
     # TODO: Treba naci nacin kako mockovati save metodu ili kako proslediti autentifikovanog user-a
