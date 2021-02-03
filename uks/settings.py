@@ -96,22 +96,9 @@ DATABASES = {
     #     },
     # }
     'default': {
-        'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'postgres',
-        'USER': 'postgres',
-        'PASSWORD': 'postgres',
-        # 'HOST': '127.0.0.1',
-        'HOST': 'db',
-        # 'HOST': 'localhost',
-        'PORT': 5432,
-        'OPTIONS': {
-            'options': '-c search_path=django,public'
-        },
+        'ENGINE': 'django.db.backends.sqlite3',
+        'NAME': BASE_DIR / 'db.sqlite3',
     }
-    # 'default': {
-    #     'ENGINE': 'django.db.backends.sqlite3',
-    #     'NAME': BASE_DIR / 'db.sqlite3',
-    # }
 }
 
 
