@@ -33,7 +33,7 @@ class ProjectDeleteView(LoginRequiredMixin, UserPassesTestMixin, DeleteView):
 class ProjectCreateView(LoginRequiredMixin, CreateView):
     template_name = 'app/project/project_form.html'
     model = Project
-    fields = ['name', 'description', 'github_url', 'is_public', 'contributors']
+    fields = ['name', 'description', 'github_url', 'is_public']
 
     def form_valid(self, form):
         form.instance.author = self.request.user
@@ -41,6 +41,7 @@ class ProjectCreateView(LoginRequiredMixin, CreateView):
         if Project.objects.filter(name=form.instance.name).exists():
             form.add_error('name', 'This name already exists')
             return super().form_invalid(form)
+        
         return super().form_valid(form)
 
 def project_contributors(request, pk):
@@ -55,7 +56,7 @@ def project_contributors(request, pk):
     return render(request, 'app/project/contributors.html', context=context)
 
 def project_branches(request, pk):
-    project = Project.objects.get(pk=pk)
+    project = get_object_or_404(Project, pk=pk)
     branches = Branch.objects.filter(project=project)
 
     context = {
@@ -67,7 +68,7 @@ def project_branches(request, pk):
     return render(request, 'app/project/branches.html', context=context)
 
 def project_commits(request, pk):
-    project = Project.objects.get(pk=pk)
+    project = get_object_or_404(Project, pk=pk)
     branch_name = request.GET.get('branch', '')
     branch = Branch.objects.get(name=branch_name, project=project)
     commits = Commit.objects.filter(branch=branch).all()
@@ -82,7 +83,7 @@ def project_commits(request, pk):
     return render(request, 'app/project/commits.html', context=context)
 
 def project_refresh_branches(request, pk):
-    project = Project.objects.get(pk=pk)
+    project = get_object_or_404(Project, pk=pk)
 
     Branch.objects.filter(project=project).delete()
     new_branches = get_branches_and_commits(project)
@@ -137,7 +138,7 @@ def delete_member(request, pk, member_id):
     try:
         user = User.objects.get(pk=member_id)
     except:
-        messages.warning(request, f'Error! User {username} doesn\'t exist.')
+        messages.warning(request, f'Error! User doesn\'t exist.')
         return redirect('project-contributors', pk)
 
     if request.user == user:
