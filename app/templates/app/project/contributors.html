@@ -6,6 +6,10 @@
     <a href="{% url 'project-detail' project_id %}">{{ project_name }}</a> - Contributors
 </h4>
 
+{% if user.is_authenticated and user in contributors %}
+    {% include "app/project/add_member.html" with project_id=project_id %}
+{% endif %}
+
 <p class="article-content mt-2">
     {{ contributors|length }} people have contributed to this project
 </p>
@@ -17,6 +21,10 @@
             <a href="#">
                 {{ contributor.first_name }} {{ contributor.last_name }} ( {{ contributor.username }} )
             </a>
+
+            {% if user.is_authenticated and user in contributors.all %}
+                <a href="{% url 'project-delete-member' project_id contributor.pk %}" class="ml-2">Remove</a>
+            {% endif %}
         </li>
     {% endfor %}
 </ul>

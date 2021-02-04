@@ -5,7 +5,18 @@ from django.dispatch import receiver
 from ..labels.models import Label
 from .models import Project
 from django.contrib.auth.models import User
+from django_currentuser.middleware import get_current_authenticated_user
 import requests
+
+@receiver(post_save, sender=Project)
+def add_first_contributor(sender, instance, created, **kwargs):
+    """
+    Add currently logged in user as first contributor
+    """
+    if not created:
+        return
+
+    instance.contributors.add(get_current_authenticated_user())
 
 @receiver(post_save, sender=Project)
 def create_default_labels(sender, instance, created, **kwargs):
