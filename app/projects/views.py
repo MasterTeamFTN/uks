@@ -1,10 +1,12 @@
-from django.shortcuts import render
+from django.shortcuts import render, redirect, get_object_or_404
 from .models import Project, Branch, Commit
 from django.contrib import messages
 from django.contrib.auth.models import User
 from django.urls import reverse_lazy
 from django.views.generic import DetailView, CreateView, DeleteView
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
+from django.contrib.auth.decorators import login_required
+from django.http import HttpResponseBadRequest, HttpResponseForbidden
 from ..utils.github_utils import get_branches_and_commits
 
 def projects(request):
@@ -42,7 +44,7 @@ class ProjectCreateView(LoginRequiredMixin, CreateView):
         return super().form_valid(form)
 
 def project_contributors(request, pk):
-    project = Project.objects.get(pk=pk)
+    project = get_object_or_404(Project, pk=pk)
 
     context = {
         'project_id': project.id,
@@ -97,3 +99,54 @@ def project_refresh_branches(request, pk):
         messages.success(request, 'Branches and commits were successfully updated')
 
     return render(request, 'app/project/branches.html', context=context)
+
+@login_required
+def add_member(request, pk):
+    if request.method != 'POST':
+        return HttpResponseBadRequest()
+
+    project = get_object_or_404(Project, pk=pk)
+
+    if request.user not in project.contributors.all():
+        return HttpResponseForbidden('403 forbidden')
+
+    username = request.POST['member_username']
+
+    try:
+        user = User.objects.get(username=username)
+    except:
+        messages.warning(request, f'Error! User {username} doesn\'t exist.')
+        return redirect('project-contributors', pk)
+
+    if user in project.contributors.all():
+        messages.warning(request, f'User {username} is already in the members list.')
+        return redirect('project-contributors', pk)
+
+    project.contributors.add(user)
+
+    messages.success(request, f'User {username} has been added to the project.')
+    return redirect('project-contributors', pk)
+
+@login_required
+def delete_member(request, pk, member_id):
+    project = get_object_or_404(Project, pk=pk)
+
+    if request.user not in project.contributors.all():
+        return HttpResponseForbidden('403 forbidden')
+
+    try:
+        user = User.objects.get(pk=member_id)
+    except:
+        messages.warning(request, f'Error! User {username} doesn\'t exist.')
+        return redirect('project-contributors', pk)
+
+    if request.user == user:
+        messages.warning(request, f'Error! You can\'t delete yourself.')
+        return redirect('project-contributors', pk)
+
+    username = user.username
+    project.contributors.remove(user)
+
+    messages.success(request, f'User {username} has been removed from the project.')
+    return redirect('project-contributors', pk)
+
