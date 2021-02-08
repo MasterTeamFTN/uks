@@ -81,31 +81,43 @@
               <!-- /END Separator -->
 
               <!-- Menu with submenu -->
-              <a href="#submenu1" data-toggle="collapse" aria-expanded="false" class="bg-dark list-group-item list-group-item-action flex-column align-items-start">
+              <!-- <a href="#submenu1" data-toggle="collapse" aria-expanded="false" class="bg-dark list-group-item list-group-item-action flex-column align-items-start">
                   <div class="d-flex w-100 justify-content-start align-items-center">
                       <span class="fa fa-dashboard fa-fw mr-3"></span>
                       <span class="menu-collapsed"><strong>Dashboard</strong></span>
                   </div>
-              </a>
+              </a> -->
 
               <!-- Submenu content -->
-              <div id="submenu1" class="collapse sidebar-submenu">
+              <!-- <div id="submenu1" class="collapse sidebar-submenu">
                   <a href="{% url 'organization-list-all' %}" class="list-group-item list-group-item-action bg-dark text-white">
                       <span class="menu-collapsed">Organizations</span>
                   </a>
-                  <a href="{% url 'app-projects'%}" class="list-group-item list-group-item-action bg-dark text-white">
+                  <a href="{% url 'project-list-all'%}" class="list-group-item list-group-item-action bg-dark text-white">
                       <span class="menu-collapsed">Projects</span>
                   </a>
-                  <a href="#" class="list-group-item list-group-item-action bg-dark text-white">
-                      <span class="menu-collapsed">Other</span>
-                  </a>
-              </div>
+              </div> -->
+
+              <a href="{% url 'project-list-all'%}" class="bg-dark list-group-item list-group-item-action">
+                <div class="d-flex w-100 justify-content-start align-items-center">
+                    <span class="fa fa-tasks fa-fw mr-3"></span>
+                    <span class="menu-collapsed"><strong>Projects</strong></span>
+                </div>
+              </a>
+              
+              <a href="{% url 'organization-list-all'%}" class="bg-dark list-group-item list-group-item-action">
+                <div class="d-flex w-100 justify-content-start align-items-center">
+                    <span class="fa fa-tasks fa-fw mr-3"></span>
+                    <span class="menu-collapsed"><strong>Organizations</strong></span>
+                </div>
+              </a>
+
               <a href="{% url 'profile'%}" class="bg-dark list-group-item list-group-item-action">
                 <div class="d-flex w-100 justify-content-start align-items-center">
                     <span class="fa fa-tasks fa-fw mr-3"></span>
                     <span class="menu-collapsed"><strong>Profile</strong></span>
                 </div>
-            </a>
+              </a>
 
               <!-- Submenu content -->
               <div id="submenu2" class="collapse sidebar-submenu">

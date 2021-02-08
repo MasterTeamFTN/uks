@@ -3,18 +3,26 @@ from .models import Project, Branch, Commit
 from django.contrib import messages
 from django.contrib.auth.models import User
 from django.urls import reverse_lazy
-from django.views.generic import DetailView, CreateView, DeleteView, UpdateView
+from django.views.generic import ListView, DetailView, CreateView, DeleteView, UpdateView
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 from ..tasks.models import Task
 from django.contrib.auth.decorators import login_required
 from django.http import HttpResponseBadRequest, HttpResponseForbidden
 from ..utils.github_utils import get_branches_and_commits
 
-def projects(request):
-    context = {
-        'projects': Project.objects.all()
-    }
-    return render(request, 'app/project/projects.html', context)
+
+class ProjectsListView(ListView):
+    model = Project
+    template_name = 'app/project/projects.html'
+    context_object_name = 'projects'
+
+    def get_queryset(self):
+        query = self.request.GET.get('q')
+
+        if query is None:
+            return Project.objects.all()
+
+        return Project.objects.filter(name__icontains=query)
 
 class ProjectDetailView(DetailView):
     template_name = 'app/project/project_detail.html'
