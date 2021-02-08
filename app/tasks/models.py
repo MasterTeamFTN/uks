@@ -25,10 +25,28 @@ class Task(models.Model):
             'project_pk': self.project.pk,
             'pk': self.pk
         })
+
     def save(self, *args, **kwargs):
-        super(Task, self).save(*args, **kwargs)
-        if self._state.adding:
+        if self.pk is not None:
+            original = Task.objects.get(pk=self.pk)
+            if original.title != self.title:
+                text = "changed the title from " + original.title + " to " + self.title
+                ChangeHistory.objects.create(task=self, updated_by=get_current_authenticated_user(), text_change=text)
+            if original.description != self.description:
+                text = "changed the description"
+                ChangeHistory.objects.create(task=self, updated_by=get_current_authenticated_user(), text_change=text)
+            if original.milestone != self.milestone:
+                text = "changed the milestone from " + original.milestone.title + " to " + self.milestone.title
+                ChangeHistory.objects.create(task=self, updated_by=get_current_authenticated_user(), text_change=text)
+            if len(list(set(original.labels.all()) - set(self.labels.all()))) > 0:
+                text = "changed the labels"
+                ChangeHistory.objects.create(task=self, updated_by=get_current_authenticated_user(), text_change=text)
+            super(Task, self).save(*args, **kwargs)
+        else:
+            super(Task, self).save(*args, **kwargs)
             TaskVersion.objects.create(task=self, updated_by=get_current_authenticated_user(), task_state=TaskState.TO_DO)
+
+
 
     def current_state(self):
         tasks = TaskVersion.objects.filter(task=self).order_by('-updated_on')
@@ -54,3 +72,25 @@ class TaskVersion(models.Model):
         choices=TaskState.choices,
         blank=True, null=True
     )
+
+class ChangeHistory(models.Model):
+    task = models.ForeignKey(Task, on_delete=models.CASCADE, default=None)
+    updated_on = models.DateTimeField(default=timezone.now)
+    updated_by = models.ForeignKey(User, on_delete=models.CASCADE)
+    text_change = models.CharField(max_length=250)
+
+
+class Comment(models.Model):
+    task = models.ForeignKey(Task, on_delete=models.CASCADE, default=None)
+    updated_on = models.DateTimeField(default=timezone.now)
+    updated_by = models.ForeignKey(User, on_delete=models.CASCADE)
+    text = RichTextField(blank=True, null=True)
+
+    def get_absolute_url(self):
+        return reverse('task-detail', kwargs={
+            'project_pk': self.task.project.pk,
+            'pk': self.task.pk
+        })
+    def save(self, *args, **kwargs):
+        self.updated_by = get_current_authenticated_user()
+        super(Comment, self).save(*args, **kwargs)

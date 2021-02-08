@@ -6,14 +6,18 @@
     <article class="media content-section">
         <div class="media-body">
             <div class="article-metadata">
+                <a href="{% url 'project-branches' project.id %}" class="mr-2">Branches & Commits</a>
                 <a href="{% url 'wiki-list' project.id %}" class="mr-2">Wiki</a>
                 <a href="{% url 'label-list' project.id %}" class="mr-2">Labels</a>
                 <a href="{% url 'board' project.id %}" class="mr-2">Board</a>
-
                 <a href="{% url 'task-list' project.id %}" class="mr-2">Tasks</a>
                 <a href="{% url 'milestone-list' project.id %}" class="mr-2">Milestones</a>
                 <a href="{% url 'project-pulse' project.id %}" class="mr-2">Statistics</a>
                 <a href="{% url 'project-contributors' project.id %}" class="mr-2">Contributors</a>
+
+                {% if user.is_authenticated and user in project.contributors.all %}
+                    <a href="{% url 'project-settings' project.id %}">Settings</a>
+                {% endif %}
             </div>
 
             <h2 class="article-title">{{ project.name }}</h2>

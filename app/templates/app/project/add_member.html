@@ -1,0 +1,9 @@
+<form action="{% url 'project-add-member' project_id %}" method="POST">
+    {% csrf_token %}
+
+    <fieldset class="form-group">
+        <label>Add new member</label> <br />
+        <input type="text" name="member_username" placeholder="Username" required />
+        <button class="btn btn-outline-secondary mb-1" type="submit">Add</button>
+    </fieldset>
+</form>

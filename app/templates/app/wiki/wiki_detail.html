@@ -12,8 +12,11 @@
 
     <div style="margin-left: auto;">
         <a href="{% url 'wiki-history' wiki.project.id wiki.id %}" class="btn btn-secondary btn-sm">History</a>
-        <a href="{% url 'wiki-update' object.project.id object.id %}" class="btn btn-primary btn-sm">Update</a>
-        <a href="{% url 'wiki-delete' object.project.id object.id %}" class="btn btn-danger btn-sm">Delete</a>
+
+        {% if user in object.project.contributors.all %}
+            <a href="{% url 'wiki-update' object.project.id object.id %}" class="btn btn-primary btn-sm">Update</a>
+            <a href="{% url 'wiki-delete' object.project.id object.id %}" class="btn btn-danger btn-sm">Delete</a>
+        {% endif %}
     </div>
 </div>
 

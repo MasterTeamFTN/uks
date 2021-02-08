@@ -14,4 +14,6 @@ urlpatterns = [
     path('project/<project_pk>/task/<pk>/done', views.done_task, name='done-task'),
     path('project/<project_pk>/task/<pk>/reopen', views.reopen_task, name='reopen-task'),
     path('project/<project_pk>/task/<pk>/update/', views.TaskUpdateView.as_view(), name='task-update'),
+    path('project/<project_pk>/task/<pk>/comment/', views.CommentCreateView.as_view(), name='comment'),
+
 ]
