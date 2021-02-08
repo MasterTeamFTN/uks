@@ -1,9 +1,25 @@
 {% extends "app/base.html" %}
+{% load crispy_forms_tags %}
 
 {% block content %}
 
-{% for project in projects %}
+<div style="display: flex;">
+    <h4>All projects</h4>
 
+    {% if user.is_authenticated %}
+        <a href="{% url 'project-create' %}" class="btn btn-primary mb-2" style="margin-left: auto;">New project</a>
+    {% endif %}
+</div>
+
+<div class="mb-2">
+    <form action="{% url 'project-list-all' %}" method="get">
+        <input name="q" type="text" placeholder="Search by project name..." />
+        <button class="btn btn-outline-primary" type="submit">Search</button>
+        <a href="{% url 'project-list-all' %}" class="btn btn-outline-secondary">Clear</a>
+    </form>
+</div>
+
+{% for project in projects %}
     <article class="media content-section">
         <div class="media-body">
             <div class="article-metadata">
@@ -14,7 +30,30 @@
             <p class="article-content">{{ project.description }}</p>
         </div>
     </article>
+{% empty %}
 
+<p>No projects found :(</p>
 
 {% endfor %}
+
+{% if is_paginated %}
+    {% if page_obj.has_previous %}
+        <a class="btn btn-outline-primary mb-4" href="?page=1{% if query %}&q={{query}}{%endif%}">First</a>
+        <a class="btn btn-outline-primary mb-4" href="?page={{ page_obj.previous_page_number }}{% if query %}&q={{query}}{%endif%}">Previous</a>
+    {% endif %}
+
+    {% for num in page_obj.paginator.page_range %}
+        {% if page_obj.number == num %}
+            <a class="btn btn-outline-primary mb-4" href="?page={{ num }}{% if query %}&q={{query}}{%endif%}">{{ num }}</a>
+        {% elif num > page_obj.number|add:'-3' and num < page_obj.number|add:'3' %}
+            <a class="btn btn-outline-primary mb-4" href="?page={{ num }}{% if query %}&q={{query}}{%endif%}">{{ num }}</a>
+        {% endif %}
+    {% endfor %}
+
+    {% if page_obj.has_next %}
+        <a class="btn btn-outline-primary mb-4" href="?page={{ page_obj.next_page_number }}{% if query %}&q={{query}}{%endif%}">Next</a>
+        <a class="btn btn-outline-primary mb-4" href="?page={{ page_obj.paginator.num_pages }}{% if query %}&q={{query}}{%endif%}">Last</a>
+    {% endif %}
+{% endif %}
+
 {% endblock content %}
