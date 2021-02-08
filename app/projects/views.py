@@ -15,6 +15,8 @@ class ProjectsListView(ListView):
     model = Project
     template_name = 'app/project/projects.html'
     context_object_name = 'projects'
+    paginate_by = 5
+    query = None
 
     def get_queryset(self):
         query = self.request.GET.get('q')
@@ -22,7 +24,13 @@ class ProjectsListView(ListView):
         if query is None:
             return Project.objects.all()
 
+        self.query = query
         return Project.objects.filter(name__icontains=query)
+
+    def get_context_data(self, **kwargs):
+        context = super(ListView, self).get_context_data(**kwargs)
+        context['query'] = self.query
+        return context
 
 class ProjectDetailView(DetailView):
     template_name = 'app/project/project_detail.html'
