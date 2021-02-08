@@ -1,25 +1,15 @@
 language: python
-
 python:
-  - "3.6"
-
-# services: postgresql
-
-# command to install dependencies
+- '3.6'
 install:
-  - pip install -r requirements.txt
-
-# before_script:
-#   - psql -c 'create database uks;' -U postgres
-
-# test:
-#   adapter: postgresql
-#   database: uks
-
-# command to run tests
+- pip install -r requirements.txt
 script:
-  - python manage.py makemigrations
-  - python manage.py migrate
-  - python manage.py test
-
-if: (type = pull_request AND branch == dev)
+- python manage.py makemigrations
+- python manage.py migrate
+- python manage.py test
+if: "(type = pull_request AND branch == dev)"
+env:
+  global:
+  - secure: eYXGRhwyzb48OK8tES9pARi2mNQqj8wWPvmA+hQiUdhFI09yJ/t8BUXpikPWYFxvn0lOobBRA4rEKT3txdDG39ZoKYyAZrqgXinhHr+uVUbWEFV2Ajclcf8lFbqo2H7NTk6b/eOCpWBLrNSwtcIJ11YkDUWc8HI9QD3b2abXLrXjQIKud0i7XyrB0uYh1IB/X6o7DYgOQ2bY95UB9cOxyGVtkZTM6RFuVU+uXIewEIFh3wWdzPd4ZAcWbFb79+bd1/yr3aQ/YR7xFZ3UeOOW/tVZyneh6Wss1HHYu/LtBvSPMcIAuuOk4RNWDXHHiQvNCrLgSvp2CEl8ZAQdnSzUOQB5AOfYpC45yex1C4RipzQS9DjH9dzDXQjWD5dB36ay+6ICnUTFJxQgI+qGOkKc9Mt0IBd5dgb8nzqCVB6qQiB1b/9ftnjNUrR+lKHsf+BdFgZTWECWOwUdZ4wNn988S2iKzsKzWLszZir6OSFKlPs2PRThWfotIe0fYtMiNp2FLl2n6m03AHE9HUtHBruxcoxgTkMFfU/jBTcG1UcBxoYvETW2s4+Wa2RG7l2Y6UkvEJzEDtmjTrknnxu7/yP7f5gIhNe3By/kpAYlLhd2CeFLz0NS1Is+XAw8y+42ouio63azmdXiq7be9CANvnN4KfXxQzi6waWpBc4WdoP350Q=
+  - secure: 8YF1yD5rH6MP7HZ9rXTgbLK5anveRud5xw07E8aA4GFBE8Mg1rYuPU1n8mjRZU1mGkRd/e1S3pv55MfZWWr8zRgqMjrgDPGBgeDXALYVm1r+Xd0mN5h8oI3f043YeGki3jR/b/Fc6rGFAp5WNmntmd+fp0Vaa51Y2g8QXXaJSixNNnGFbEStjxZ86OxhhZFe5LJ5nflkMKxnd0UuXRqLkCGhgg+9wyFDQ684/wxVzu2WUnUJ92DM0z1aSj76UUJc0jeufZqI6EMhlQZ5ivV2w3xoPEJJJYvkgamcaqtVlw6kSSy0eC4oWdC0friuzYXvQA0CnM54uACoyNdEl0pgwnKA+kNs8FIILdJugQ7xVANgX2TQzJW5f2VzjwwFc/Ejt24xNfpnaygYKGBEs45S05EdPIxt6OMy08P+V+28YglbGgGyWDum9L2fx85oPH1uNHY6CFnN4eLlPEN4Wb6yFIQleT9YmpLSUeScCdddSJL+7qwSQODfRfYugMuF51Aqr6qGTyigrfjBsYQYZ048+0pAFDfGGer6gfOWBrA7a2MG1lD4qHSN6PUv9X8xvW6PUz9IPwU7wZ6NnEMyA5hFu+nzXiy5NJws/sogsgn5zmenZr9kk0jOv2fG9w0fnjh6q1iOLfUZiDyemyeu4zkuPD/69TaPpo/mRyZubpLNFhk=
+  - secure: XZRFVDTvbGfPaipyLXkRiNz0A0/qo7XoA6hLI3s04qHExaBGYoPxlaYfer+dvwAGb92oCNd9un3pJ44QGCYChxX5/2pwlaqPOXpNjXyQyiCHM0Vg728FK/kQ+bVrcsxdJOjeTpLWdmrH4aehVdlIEaFbne1ANzWSjd8fXXuF1TJEGnBYXvby7hhFgz2i3bI9RZV+VY3f5jQoaN9mkeYdhXcJp0vY3gREtrEMiAkhBsEV8KfUuIIpcEgSHRtTES7kpXmv2x/tGxSL5UQrEfHGEU4852lHKB+TN9cHLqEuE6+IPqEmj+WLOLkYPPAlXDihnaNL70Z2FIxh4ucSwXL6sB1L65y7+um56njS/CUx2Ey/AQ9+Kp1y2fkm5Rv2RAiTrdZYzU6lsQp03KzSvZKCNYhQ/TAwTtxRBm6G+feIuUwXSD0I4ar22qK3GXTCTstGklvBzq1SU1dZrp/KErjB6m/qWCLu/zl6Xs7tlp5gjgcAwX0VdXARaAXBQO8ZLezIS/UjPUh2VVqSyMAJUjDUTXyGXoEMMg62L72zXwhRxqNUB3aXJZjiCUBYI/TwCbRt0taMwfdAVa/6xCEp0U5mn9EafbRcyrmaSvwoJk90Ur61wHQwfqc496TLYbu/Kxd1VeGbAS6qHWT7gw8ZZdn1cBUR3TFuma+xiUutgkWo+/0=
