@@ -5,6 +5,7 @@ from django.contrib.auth.models import User
 from django.urls import reverse_lazy
 from django.views.generic import DetailView, CreateView, DeleteView, UpdateView
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
+from ..tasks.models import Task
 from django.contrib.auth.decorators import login_required
 from django.http import HttpResponseBadRequest, HttpResponseForbidden
 from ..utils.github_utils import get_branches_and_commits
@@ -55,6 +56,28 @@ def project_contributors(request, pk):
 
     return render(request, 'app/project/contributors.html', context=context)
 
+def project_pulse(request, pk):
+    project = Project.objects.get(pk=pk)
+    tasks = Task.objects.filter(project=project)
+    open_tasks = []
+    closed_tasks = []
+    for task in tasks:
+        if task.current_state():
+            if task.current_state().task_state == "DONE":
+                closed_tasks.append(task)
+            else:
+                open_tasks.append(task)
+    percentage = 0
+    if len(open_tasks) + len(closed_tasks) != 0:
+        percentage =  round(len(closed_tasks)/(len(open_tasks) + len(closed_tasks)) * 100)
+
+    context = {
+        'object': project,
+        'open_tasks': open_tasks,
+        'closed_tasks': closed_tasks,
+        'percent_done': percentage
+    }
+    return render(request, 'app/project/statistics_pulse.html', context)
 def project_branches(request, pk):
     project = get_object_or_404(Project, pk=pk)
     branches = Branch.objects.filter(project=project)

@@ -35,7 +35,7 @@
                 <span class="badge badge-primary" style="background-color: {{ label.color }}">{{ label.name }}</span>
             {% endfor %}
             <br />
-            <small><b>{{ task.current_state.updated_by.username  }} </b> opened this issue {{ task.current_state.updated_on | naturaltime }}</small> <br />
+            <small><b>{{ task.opened_state.updated_by.username  }} </b> opened this issue {{ task.opened_state.updated_on | naturaltime }}</small> <br />
             {% if not task.milestone %}
             {% else %}
             Milestone -             <a href="{% url 'milestone-detail' project.id task.milestone.id %}">{{ task.milestone }}</a>
