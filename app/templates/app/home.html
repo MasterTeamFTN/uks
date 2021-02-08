@@ -2,29 +2,22 @@
 {% block content %}
 
 {% if user.is_authenticated %}
-    <h2>This is home page of an authenticated user</h2>
-    <div>
-        <a class="btn btn-primary btn-sm mt-1 mb-1" href="{% url 'project-create' %}">Create new project</a>
+    <div style="display: flex;" class="mb-2">
+        <h4>Your projects</h4>
+        <a class="btn btn-primary" href="{% url 'project-create' %}" style="margin-left: auto;">Create new project</a>
     </div>
-    <p>Here you can see all of your projects</p>
+
     {% for project in projects %}
-
-    <article class="media content-section">
-        <div class="media-body">
-            <div class="article-metadata">
-                <a class="mr-2" href="#">{{ project.name }}</a>
-                <small class="text-muted">Last updated on {{ project.updated_on|date:"F d, Y"}}</small>
-                <div>
-                    <a class="btn btn-danger btn-sm mt-1 mb-1" href="{% url 'project-delete' project.id%}">Delete</a>
+        <article class="media content-section">
+            <div class="media-body">
+                <div class="article-metadata">
+                    <small class="text-muted">Last updated on {{ project.updated_on|date:"F d, Y"}}</small>
                 </div>
+                <h3><a class="article-title" href="{% url 'project-detail' project.id%}">{{ project.name }}</a></h3>
+                <p class="article-content">{{ project.description }}</p>
             </div>
-            <h2><a class="article-title" href="{% url 'project-detail' project.id%}">{{ project.name }}</a></h2>
-            <p class="article-content">{{ project.description }}</p>
-        </div>
-    </article>
-
-
-{% endfor %}
+        </article>
+    {% endfor %}
 {% else %}
     <h1>Welcome to UKS Lab</h1>
     <p>A clone of Github/Gitlab</p>

@@ -1,9 +1,9 @@
-from django.shortcuts import render, redirect, get_object_or_404
+from django.shortcuts import render, redirect, get_object_or_404, reverse
 from .models import Project, Branch, Commit
 from django.contrib import messages
 from django.contrib.auth.models import User
 from django.urls import reverse_lazy
-from django.views.generic import DetailView, CreateView, DeleteView
+from django.views.generic import DetailView, CreateView, DeleteView, UpdateView
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 from django.contrib.auth.decorators import login_required
 from django.http import HttpResponseBadRequest, HttpResponseForbidden
@@ -151,3 +151,30 @@ def delete_member(request, pk, member_id):
     messages.success(request, f'User {username} has been removed from the project.')
     return redirect('project-contributors', pk)
 
+def project_settings(request, pk):
+    project = get_object_or_404(Project, pk=pk)
+
+    context = {
+        'project': project
+    }
+
+    return render(request, 'app/project/settings.html', context=context)
+
+class ProjectEditView(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
+    template_name = 'app/project/project_edit.html'
+    model = Project
+    fields = ['name', 'description', 'is_public']
+
+    def form_valid(self, form):
+        form.instance.author = self.request.user
+
+        if Project.objects.filter(name=form.instance.name).exists():
+            if self.get_object().name != form.instance.name:
+                form.add_error('name', 'This name already exists')
+                return super().form_invalid(form)
+        
+        return super().form_valid(form)
+
+    def test_func(self):
+        project = self.get_object()
+        return self.request.user in project.contributors.all()

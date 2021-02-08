@@ -1,0 +1,40 @@
+{% extends "app/base.html" %}
+
+{% block content %}
+
+<h4>
+    <a href="{% url 'project-detail' project.id %}">{{ project.name }}</a> - Settings
+</h4>
+
+{% if user.is_authenticated and user in project.contributors.all %}
+<div class="mt-4">
+        On this page you can edit project information. Also, you are able to delete it.
+        
+        <h4 class="mt-2 mb-1">Edit</h4>
+
+        <article class="media content-section mt-2 mb-2">
+            <div class="media-body">
+                Edit this project: 
+                <a href="{% url 'project-edit' project.id %}" class="btn btn-sm btn-primary">Edit</a>
+                
+                <br />
+
+                This project is:
+                {% if project.is_public %} PUBLIC {% else %} PRIVATE {% endif %}
+            </div>
+        </article>
+
+        <hr />
+
+        <h4>Delete</h4>
+
+        <article class="media content-section mt-2 mb-2">
+            <div class="media-body">
+                Delete this project: 
+                <a href="{% url 'project-delete' project.id %}" class="btn btn-sm btn-danger">Delete</a>
+            </div>
+        </article>
+    </div>
+{% endif %}
+
+{% endblock content %}
