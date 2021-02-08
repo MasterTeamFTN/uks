@@ -65,6 +65,7 @@ def project_pulse(request, pk):
     percentage = 0
     if len(open_tasks) + len(closed_tasks) != 0:
         percentage =  round(len(closed_tasks)/(len(open_tasks) + len(closed_tasks)) * 100)
+
     context = {
         'object': project,
         'open_tasks': open_tasks,
