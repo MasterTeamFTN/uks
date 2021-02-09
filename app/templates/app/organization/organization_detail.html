@@ -4,7 +4,7 @@
 <div style="display: flex;">
     <h4>{{ object.name }}</h4>
 
-    {% if user.is_authenticated %}
+    {% if user.is_authenticated and user in object.members.all %}
     <div style="margin-left: auto;">
         <a href="{% url 'organization-edit' object.pk %}" class="btn btn-secondary btn-sm">Edit</a>
         <a href="{% url 'organization-delete' object.pk %}" class="btn btn-danger btn-sm">Delete</a>
@@ -29,6 +29,30 @@
                 <p class="article-content">{{ object.description }}</p>
             </div>
         </article>
+
+
+        <div style="display: flex;">
+            <h4>Projects</h4>
+    
+            {% if user.is_authenticated and user in object.members.all %}
+                <a href="{% url 'organization-add-project' object.pk %}" class="btn btn-primary mb-2" style="margin-left: auto;">Create project</a>
+            {% endif %}
+        </div>
+
+        {% for project in projects %}
+            <article class="media content-section">
+                <div class="media-body">
+                    <div class="article-metadata">
+                        <a class="mr-2" href="#">{{ project.name }}</a>
+                        <small class="text-muted">Last updated on {{ project.updated_on|date:"F d, Y"}}</small>
+                    </div>
+                    <h2><a class="article-title" href="{% url 'project-detail' project.id%}">{{ project.name }}</a></h2>
+                    <p class="article-content">{{ project.description }}</p>
+                </div>
+            </article>
+        {% empty %}
+            <p>This organization doesn't have any projects</p>
+        {% endfor %}
     </div>
 
     <div class="tab-pane fade" id="members" role="tabpanel" aria-labelledby="members-tab">
