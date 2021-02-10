@@ -2,6 +2,7 @@ from django.db import models
 from django.utils import timezone
 from django.contrib.auth.models import User
 from django.urls import reverse
+from ..organizations.models import Organization
 
 class Project(models.Model):
     name = models.CharField(max_length=100)
@@ -11,6 +12,7 @@ class Project(models.Model):
     updated_on = models.DateTimeField(default=timezone.now)
     is_public = models.BooleanField(default=True)
     contributors = models.ManyToManyField(User)
+    organization = models.ForeignKey(Organization, null=True, on_delete=models.CASCADE)
 
     def __str__(self):
         return self.name
