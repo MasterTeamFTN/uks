@@ -3,7 +3,7 @@
 {% block content %}
     <div class="row content-section">
       <div class="col-md-5 media">
-        <img class="rounded-circle mt-5" src="{{ user.profile.image.url }}">
+        <img class="rounded-circle mt-5" src="{{ current_user.profile.image.url }}">
       </div>
       <div class="col-md-7 mt-5">
         <div class="container">
@@ -26,17 +26,20 @@
                         <form method="POST" enctype="multipart/form-data">
                             {% csrf_token %}
                             <fieldset class="form-group">
-                                <legend class="border-bottom mb-4">
-                                    Profile Info 
-                                    <a class="btn btn-primary btn-sm mt-1 mb-1" href="{% url 'edit-profile'%}">Edit</a>
-                                </legend>
-                                <h3>{{ user.username }}</h3>
-                                {{ user.email }} <br />
-                                {{ user.first_name }} {{ user.last_name }} <br />
+                                {% if user.pk == current_user.pk %} 
+                                    <legend class="border-bottom mb-4">
+                                        Profile Info 
+                                        <a class="btn btn-primary btn-sm mt-1 mb-1" href="{% url 'edit-profile'%}">Edit</a>
+                                    </legend>
+                                {% endif %}
+                                <h3>{{ current_user.username }}</h3>
+                                {{ current_user.email }} <br />
+                                {{ current_user.first_name }} {{ current_user.last_name }} <br />
                                 {{ commits.count }} commits
                             </fieldset>
                             
                         </form>
+                        {% if commits.count > 0 %} 
                         <article class="media content-section">
                             <div class="media-body">
                                 <div class="article-metadata">
@@ -48,9 +51,10 @@
                                 <p class="article-content">{{lastCommit.message}}</p>
                             </div>
                         </article>
+                        {% endif %}
                     </div>
                     <div class="tab-pane container" id="projects">
-                        <legend class="border-bottom mb-4">{{ user.first_name }}'s projects</legend>
+                        <legend class="border-bottom mb-4">{{ current_user.first_name }}'s projects</legend>
                         <ul>
                             {% for project in projects %}
                             <li>
@@ -63,7 +67,7 @@
                         </ul>
                     </div>
                     <div class="tab-pane container fade" id="organizations">
-                        <legend class="border-bottom mb-4">{{ user.first_name }}'s organizations</legend>
+                        <legend class="border-bottom mb-4">{{ current_user.first_name }}'s organizations</legend>
                         <ul>
                             {% for organization in organizations %}
                             <li>

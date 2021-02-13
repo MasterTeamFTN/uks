@@ -23,8 +23,9 @@ This branch has {{ commits|length }} commits
             <p>{{ commit.message }}</p>
             <small class="text-muted">
                 {% if commit.author %}
-                <!-- TODO: dodati link ka profilu korisnika -->
-                {{ commit.author.username }}
+                <a href="{% url 'profile' commit.author.id%}">
+                    {{ commit.author.username }}
+                </a>
                 {% else %}
                 Unknown
                 {% endif %}
