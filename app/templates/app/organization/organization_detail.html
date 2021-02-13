@@ -66,10 +66,9 @@
                 <ul>
                     {% for member in object.members.all %}
                     <li>
-                        <!-- TODO: Mozda dodati link ka profilu korisnika? -->
-                        <!-- Morace se napraviti zasebna putanja tipa /profile/1 -->
-                        {{ member.first_name }} {{ member.last_name }} - {{ member.username }}
-
+                        <a href="{% url 'profile' member.id%}">
+                            {{ member.first_name }} {{ member.last_name }} - {{ member.username }}
+                        </a>
                         {% if user.is_authenticated %}
                             <a href="{% url 'organization-delete-member' object.pk member.pk %}">Remove</a>
                         {% endif %}
