@@ -86,8 +86,6 @@
 
               var $populationChart = $("#population-chart");
               var ctx = $populationChart[0].getContext("2d");
-                console.log( {{ data|safe }})
-                console.log( {{ labels|safe }})
 
                   new Chart(ctx, {
                     type: 'bar',

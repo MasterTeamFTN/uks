@@ -95,10 +95,11 @@ def project_pulse(request, pk):
     labels = []
     data = []
 
-    queryset = Commit.objects.filter(branch=branch).values('author').annotate(commits=Count('author')).order_by('-commits')
-    for entry in queryset:
-        labels.append(entry['author'])
-        data.append(entry['commits'])
+    for member in project.contributors.all():
+        labels.append(member.username)
+        commits = Commit.objects.filter(branch=branch, author=member)
+        data.append(commits.count())
+
     context = {
         'object': project,
         'open_tasks': open_tasks,
