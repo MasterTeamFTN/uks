@@ -57,7 +57,7 @@ class LabelCreateView(LoginRequiredMixin, UserPassesTestMixin, CreateView):
         project_id = self.kwargs.get('project_pk')
         project = get_object_or_404(Project, pk=project_id)
         return self.request.user in project.contributors.all()
-    
+
 
 def label_list_view(request, project_pk):
     project = get_object_or_404(Project, pk=project_pk)
