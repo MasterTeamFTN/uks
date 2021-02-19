@@ -1,4 +1,4 @@
-from django.shortcuts import render
+from django.shortcuts import render, get_object_or_404
 from .models import Task, Project, TaskVersion, TaskState, Comment, ChangeHistory
 from django.contrib.auth.models import User
 from django.urls import reverse_lazy
@@ -8,11 +8,20 @@ from django_currentuser.middleware import get_current_authenticated_user
 from django.urls import reverse
 from itertools import chain
 from operator import attrgetter
+from .forms import TaskCreateForm
 
 class TaskCreateView(LoginRequiredMixin, UserPassesTestMixin, CreateView):
     template_name = 'app/task/task_form.html'
-    model = Task
-    fields = ['title', 'description', 'labels', 'assignees', 'milestone']
+    form_class = TaskCreateForm
+
+    def get_form_kwargs(self):
+        kwargs = super(TaskCreateView, self).get_form_kwargs()
+
+        project_id = self.kwargs.get('project_pk')
+        kwargs['project'] = get_object_or_404(Project, pk=project_id)
+
+        return kwargs
+
     def form_valid(self, form):
         project_id = self.kwargs.get('project_pk')
         form.instance.project = Project.objects.get(pk=project_id)
@@ -25,12 +34,23 @@ class TaskCreateView(LoginRequiredMixin, UserPassesTestMixin, CreateView):
 
 class TaskUpdateView(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
     template_name = 'app/task/task_form.html'
+    form_class = TaskCreateForm
     model = Task
-    fields = ['title', 'description', 'labels', 'assignees', 'milestone']
+
+    def get_form_kwargs(self):
+        kwargs = super(TaskUpdateView, self).get_form_kwargs()
+
+        project_id = self.kwargs.get('project_pk')
+        kwargs['project'] = get_object_or_404(Project, pk=project_id)
+
+        return kwargs
 
     def test_func(self):
-        task = self.get_object()
-        return self.request.user in task.assignees.all()
+        # task = self.get_object()
+        # return self.request.user in task.assignees.all()
+        project_id = self.kwargs.get('project_pk')
+        project = Project.objects.get(pk=project_id)
+        return self.request.user in project.contributors.all()
 
 def task_list_view(request, project_pk):
     project = Project.objects.get(pk=project_pk)

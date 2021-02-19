@@ -36,7 +36,10 @@ class Task(models.Model):
                 text = "changed the description"
                 ChangeHistory.objects.create(task=self, updated_by=get_current_authenticated_user(), text_change=text)
             if original.milestone != self.milestone:
-                text = "changed the milestone from " + original.milestone.title + " to " + self.milestone.title
+                if original.milestone == None:
+                    text = "changed the milestone to " + self.milestone.title
+                else:
+                    text = "changed the milestone from " + original.milestone.title + " to " + self.milestone.title
                 ChangeHistory.objects.create(task=self, updated_by=get_current_authenticated_user(), text_change=text)
             if len(list(set(original.labels.all()) - set(self.labels.all()))) > 0:
                 text = "changed the labels"
