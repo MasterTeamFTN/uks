@@ -95,7 +95,7 @@ def project_pulse(request, pk):
     labels = []
     data = []
 
-    for member in project.contributors.all():
+    for member in authors.values():
         labels.append(member.username)
         commits = Commit.objects.filter(branch=branch, author=member)
         data.append(commits.count())
