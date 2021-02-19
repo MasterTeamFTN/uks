@@ -9,7 +9,7 @@ from ..tasks.models import Task
 from django.contrib.auth.decorators import login_required
 from django.http import HttpResponseBadRequest, HttpResponseForbidden
 from ..utils.github_utils import get_branches_and_commits
-
+from django.db.models import Count
 
 class ProjectsListView(ListView):
     model = Project
@@ -58,7 +58,7 @@ class ProjectCreateView(LoginRequiredMixin, CreateView):
         if Project.objects.filter(name=form.instance.name).exists():
             form.add_error('name', 'This name already exists')
             return super().form_invalid(form)
-        
+
         return super().form_valid(form)
 
 def project_contributors(request, pk):
@@ -77,6 +77,7 @@ def project_pulse(request, pk):
     tasks = Task.objects.filter(project=project)
     open_tasks = []
     closed_tasks = []
+    branches = Branch.objects.filter(project=project)
     for task in tasks:
         if task.current_state():
             if task.current_state().task_state == "DONE":
@@ -87,13 +88,47 @@ def project_pulse(request, pk):
     if len(open_tasks) + len(closed_tasks) != 0:
         percentage =  round(len(closed_tasks)/(len(open_tasks) + len(closed_tasks)) * 100)
 
+    branch = Branch.objects.filter(project=project, name='dev').first()
+    authors = Commit.objects.filter(branch=branch).order_by().values('author').distinct()
+    commits = Commit.objects.filter(branch=branch)
+
+    labels = []
+    data = []
+
+    queryset = Commit.objects.filter(branch=branch).values('author').annotate(commits=Count('author')).order_by('-commits')
+    for entry in queryset:
+        labels.append(entry['author'])
+        data.append(entry['commits'])
     context = {
         'object': project,
         'open_tasks': open_tasks,
         'closed_tasks': closed_tasks,
-        'percent_done': percentage
+        'percent_done': percentage,
+        'branches': branches,
+        'commits': commits,
+        'authors': authors,
+        'labels': labels,
+        'data': data,
     }
     return render(request, 'app/project/statistics_pulse.html', context)
+def pulse_chart(request, pk):
+    project = Project.objects.get(pk=pk)
+    branch = Branch.objects.filter(project=project, name='dev').first()
+    authors = Commit.objects.filter(branch=branch).order_by().values('author').distinct()
+    commits = Commit.objects.filter(branch=branch)
+
+    labels = []
+    data = []
+
+    queryset = Commit.objects.filter(branch=branch).values('author').annotate(username=Count('author'),commits=Count('author')).order_by('-commits')
+    for entry, ind in queryset:
+        labels.append(entry['username'])
+        data.append(entry['commits'])
+
+    return JsonResponse(data={
+        'labels': labels,
+        'data': data,
+    })
 def project_branches(request, pk):
     project = get_object_or_404(Project, pk=pk)
     branches = Branch.objects.filter(project=project)
@@ -211,7 +246,7 @@ class ProjectEditView(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
             if self.get_object().name != form.instance.name:
                 form.add_error('name', 'This name already exists')
                 return super().form_invalid(form)
-        
+
         return super().form_valid(form)
 
     def test_func(self):

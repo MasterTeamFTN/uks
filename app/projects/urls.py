@@ -15,4 +15,6 @@ urlpatterns = [
     path('project/<pk>/branches/refresh', views.project_refresh_branches, name='project-refresh-branches'),
     path('project/<pk>/settings', views.project_settings, name='project-settings'),
     path('project/<pk>/edit', views.ProjectEditView.as_view(), name='project-edit'),
+    path('project/<pk>/pulse-chart/', views.pulse_chart, name='pulse-chart'),
+
 ]
