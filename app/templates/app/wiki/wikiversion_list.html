@@ -8,6 +8,8 @@
         <a href="{% url 'wiki-list' wiki.project.id %}">Wikis</a>
         -
         <a href="{% url 'wiki-detail' wiki.project.id wiki.id %}">{{ wiki.title }}</a>
+        -
+        History
     </h4>
 </div>
 
@@ -16,8 +18,7 @@
         <li>
             Updated on {{ version.updated_on|date:"F d, Y H:i" }}, 
 
-            <!-- TODO: dodati link ka profilu korisnika -->
-            by <a href="#" >{{ version.updated_by.username }}</a>
+            by <a href="{% url 'profile' version.updated_by.id%}" >{{ version.updated_by.username }}</a>
         </li>
     {% endfor %}
 </ul>

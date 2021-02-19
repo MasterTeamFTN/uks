@@ -3,19 +3,85 @@
 {% block content %}
     <div class="row content-section">
       <div class="col-md-5 media">
-        <img class="rounded-circle mt-5" src="{{ user.profile.image.url }}">
+        <img class="rounded-circle mt-5" src="{{ current_user.profile.image.url }}">
       </div>
       <div class="col-md-7 mt-5">
-        <form method="POST" enctype="multipart/form-data">
-            {% csrf_token %}
-            <fieldset class="form-group">
-                <legend class="border-bottom mb-4">Profile Info</legend>
-                <h3>{{ user.username }}</h3>
-                {{ user.email }} <br />
-                {{ user.first_name }} {{ user.last_name }}
-            </fieldset>
-            <a class="btn btn-primary btn-sm mt-1 mb-1" href="{% url 'edit-profile'%}">Edit</a>
-        </form>
+        <div class="container">
+
+                <ul class="nav nav-tabs">
+                    <li class="nav-item">
+                        <a class="nav-link active" data-toggle="tab" href="#profileInfo">Profile info</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" data-toggle="tab" href="#projects">Projects</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" data-toggle="tab" href="#organizations">Organizations</a>
+                    </li>
+                </ul>
+
+                <!-- Tab panes -->
+                <div class="tab-content">
+                    <div class="tab-pane container active" id="profileInfo">
+                        <form method="POST" enctype="multipart/form-data">
+                            {% csrf_token %}
+                            <fieldset class="form-group">
+                                {% if user.pk == current_user.pk %} 
+                                    <legend class="border-bottom mb-4">
+                                        Profile Info 
+                                        <a class="btn btn-primary btn-sm mt-1 mb-1" href="{% url 'edit-profile'%}">Edit</a>
+                                    </legend>
+                                {% endif %}
+                                <h3>{{ current_user.username }}</h3>
+                                {{ current_user.email }} <br />
+                                {{ current_user.first_name }} {{ current_user.last_name }} <br />
+                                {{ commits.count }} commits
+                            </fieldset>
+                            
+                        </form>
+                        {% if commits.count > 0 %} 
+                        <article class="media content-section">
+                            <div class="media-body">
+                                <div class="article-metadata">
+                                    <small class="text-muted">Last commit on {{ lastCommit.datetime|date:"F d, Y"}}</small>
+                                </div>
+                                <h2>
+                                    <a href="{{ lastCommit.github_diff_url }}" class="btn btn-secondary btn-sm" target="_blank">Github diff</a>
+                                </h2>
+                                <p class="article-content">{{lastCommit.message}}</p>
+                            </div>
+                        </article>
+                        {% endif %}
+                    </div>
+                    <div class="tab-pane container" id="projects">
+                        <legend class="border-bottom mb-4">{{ current_user.first_name }}'s projects</legend>
+                        <ul>
+                            {% for project in projects %}
+                            <li>
+                                <a class="mr-2" href="{% url 'project-detail' project.id%}">{{ project.name }}</a>
+                                <small class="text-muted">Last updated on {{ project.updated_on|date:"F d, Y"}}</small>    
+                            </li>
+                            {% empty %}
+                                <p>You have no projects</p>
+                            {% endfor %}
+                        </ul>
+                    </div>
+                    <div class="tab-pane container fade" id="organizations">
+                        <legend class="border-bottom mb-4">{{ current_user.first_name }}'s organizations</legend>
+                        <ul>
+                            {% for organization in organizations %}
+                            <li>
+                                <a class="mr-2" href="{% url 'organization-detail' organization.pk %}">{{ organization.name }}</a>
+                                <small class="text-muted">{{ organization.description}}</small>    
+                            </li>
+                            {% empty %}
+                                <p>You are member of no organization</p>
+                            {% endfor %}
+                        </ul>
+                    </div>
+                    <div class="tab-pane container fade" id="menu2">...</div>
+                </div>
+            </div>
       </div>
     </div>
 {% endblock content %}

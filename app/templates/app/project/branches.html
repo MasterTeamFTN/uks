@@ -1,0 +1,26 @@
+{% extends "app/base.html" %}
+
+{% block content %}
+
+<div style="display: flex;">
+    <h4>
+        <a href="{% url 'project-detail' project_id %}">{{ project_name }}</a> - Branches
+    </h4>
+
+    <a href="{% url 'project-refresh-branches' project_id %}" class="btn btn-primary" style="margin-left: auto;">Refresh</a>
+</div>
+
+<p>Note that <b>refreshing</b> branches will take some time...</p>
+
+
+This project has {{ branches|length }} branches
+<ul>
+    {% for branch in branches %}
+    <li>
+        <a href="{% url 'project-commits' project_id %}?branch={{ branch.name  }}">{{ branch.name }}</a>
+    </li>
+    {% endfor %}
+</ul>
+
+{% endblock content %}
+

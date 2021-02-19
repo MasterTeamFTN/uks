@@ -1,0 +1,47 @@
+{% extends "app/base.html" %}
+
+{% block content %}
+
+<div style="display: flex;">
+    <h4>
+        <a href="{% url 'project-detail' project_id %}">{{ project_name }}</a>
+        -
+        <a href="{% url 'project-branches' project_id %}">Branches</a>
+        -
+        {{ branch_name }}
+    </h4>
+
+    <a href="https://github.com/MasterTeamFTN/uks/tree/{{ branch_name }}" class="btn btn-primary" style="margin-left: auto;" target="_blank">Show on Github</a>
+</div>
+
+This branch has {{ commits|length }} commits
+{% for commit in commits %}
+
+<article class="media content-section mt-2">
+    <div class="media-body" style="display: flex;">
+        <div>
+            <p>{{ commit.message }}</p>
+            <small class="text-muted">
+                {% if commit.author %}
+                <a href="{% url 'profile' commit.author.id%}">
+                    {{ commit.author.username }}
+                </a>
+                {% else %}
+                Unknown
+                {% endif %}
+                committed on {{ commit.datetime|date:"F d, Y" }}
+            </small>
+        </div>
+        
+        <div style="margin-left: auto;">
+            <a href="{{ commit.github_diff_url }}" class="btn btn-secondary btn-sm" target="_blank">Github diff</a>
+        </div>
+    </div>
+</article>
+
+{% empty %}
+<p>This branch doesn't have any commits</p>
+{% endfor %}
+
+{% endblock content %}
+

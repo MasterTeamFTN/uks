@@ -11,9 +11,8 @@
 
   <!-- Bootstrap CSS -->
   <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
-
+  <script src="https://code.jquery.com/jquery-3.2.1.min.js"></script>
   <link rel="stylesheet" type="text/css" href="{% static 'app/main.css' %}" />
-
 </head>
 <body>
   <header class="site-header">
@@ -81,31 +80,43 @@
               <!-- /END Separator -->
 
               <!-- Menu with submenu -->
-              <a href="#submenu1" data-toggle="collapse" aria-expanded="false" class="bg-dark list-group-item list-group-item-action flex-column align-items-start">
+              <!-- <a href="#submenu1" data-toggle="collapse" aria-expanded="false" class="bg-dark list-group-item list-group-item-action flex-column align-items-start">
                   <div class="d-flex w-100 justify-content-start align-items-center">
                       <span class="fa fa-dashboard fa-fw mr-3"></span>
                       <span class="menu-collapsed"><strong>Dashboard</strong></span>
                   </div>
-              </a>
+              </a> -->
 
               <!-- Submenu content -->
-              <div id="submenu1" class="collapse sidebar-submenu">
+              <!-- <div id="submenu1" class="collapse sidebar-submenu">
                   <a href="{% url 'organization-list-all' %}" class="list-group-item list-group-item-action bg-dark text-white">
                       <span class="menu-collapsed">Organizations</span>
                   </a>
-                  <a href="{% url 'app-projects'%}" class="list-group-item list-group-item-action bg-dark text-white">
+                  <a href="{% url 'project-list-all'%}" class="list-group-item list-group-item-action bg-dark text-white">
                       <span class="menu-collapsed">Projects</span>
                   </a>
-                  <a href="#" class="list-group-item list-group-item-action bg-dark text-white">
-                      <span class="menu-collapsed">Other</span>
-                  </a>
-              </div>
-              <a href="{% url 'profile'%}" class="bg-dark list-group-item list-group-item-action">
+              </div> -->
+
+              <a href="{% url 'project-list-all'%}" class="bg-dark list-group-item list-group-item-action">
+                <div class="d-flex w-100 justify-content-start align-items-center">
+                    <span class="fa fa-tasks fa-fw mr-3"></span>
+                    <span class="menu-collapsed"><strong>Projects</strong></span>
+                </div>
+              </a>
+
+              <a href="{% url 'organization-list-all'%}" class="bg-dark list-group-item list-group-item-action">
+                <div class="d-flex w-100 justify-content-start align-items-center">
+                    <span class="fa fa-tasks fa-fw mr-3"></span>
+                    <span class="menu-collapsed"><strong>Organizations</strong></span>
+                </div>
+              </a>
+
+              <a href="{% url 'profile' user.id%}" class="bg-dark list-group-item list-group-item-action">
                 <div class="d-flex w-100 justify-content-start align-items-center">
                     <span class="fa fa-tasks fa-fw mr-3"></span>
                     <span class="menu-collapsed"><strong>Profile</strong></span>
                 </div>
-            </a>
+              </a>
 
               <!-- Submenu content -->
               <div id="submenu2" class="collapse sidebar-submenu">
@@ -136,7 +147,8 @@
     </main>
 
   <!-- JS for Bootstrap -->
-  <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
+
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@2.9.3/dist/Chart.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
   <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
 </body>

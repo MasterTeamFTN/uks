@@ -7,8 +7,10 @@
             <a href="{% url 'project-detail' project.id %}">{{ project.name }}</a>
             - Wikis
         </h4>
-    
+
+        {% if user in project.contributors.all %}
         <a href="{% url 'wiki-create' project.pk %}" class="btn btn-primary mb-2" style="margin-left: auto;">New</a>
+        {% endif %}
     </div>
 
 {% for wiki in wikis %}
@@ -21,17 +23,24 @@
             
             <div style="margin-left: auto;">
                 <a href="{% url 'wiki-history' wiki.project.id wiki.id %}" class="btn btn-secondary btn-sm">History</a>
-                <a href="{% url 'wiki-update' wiki.project.id wiki.id %}" class="btn btn-primary btn-sm">Update</a>
-                <a href="{% url 'wiki-delete' wiki.project.id wiki.id %}" class="btn btn-danger btn-sm">Delete</a>
+
+                {% if user in project.contributors.all %}
+                    <a href="{% url 'wiki-update' wiki.project.id wiki.id %}" class="btn btn-primary btn-sm">Update</a>
+                    <a href="{% url 'wiki-delete' wiki.project.id wiki.id %}" class="btn btn-danger btn-sm">Delete</a>
+                {% endif %}
             </div>
         </div>
     </article>
 {% empty %}
-    <p>
-        Wikis provide a place in your repository to lay out the roadmap of your project, 
-        show the current status, and document software better, together.
-    </p>
-    <a href="{% url 'wiki-create' project.pk %}">Create your first wiki page</a>
+    {% if user in project.contributors.all %}
+        <p>
+            Wikis provide a place in your repository to lay out the roadmap of your project, 
+            show the current status, and document software better, together.
+        </p>
+        <a href="{% url 'wiki-create' project.pk %}">Create your first wiki page</a>
+    {% else %}
+        <p>This project doesn't have any wiki pages</p>
+    {% endif %}
 {% endfor %}
 
 {% endblock content %}

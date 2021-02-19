@@ -1,0 +1,14 @@
+{% extends "app/base.html" %}
+{% load crispy_forms_tags %}
+{% block content %}
+    <article class="media content-section">
+        <div class="media-body">
+            <legend class="border-bottom mb-4">
+                Profile Info 
+            </legend>
+            <h3>{{ user.username }}</h3>
+            {{ user.email }} <br />
+            {{ user.first_name }} {{ user.last_name }} <br />
+        </div>
+    </article>
+{% endblock content %}
