@@ -71,6 +71,48 @@
             {% endfor %}
             <hr>
         </div>
+        <br />
+        This project has <b>{{ branches|length }} branches.</b>
+        <b>{{ authors|length }}</b> authors have pushed <b> {{ commits|length }} </b> commits to <b>main</b> branch.
+        <div id="container" style="width: 75%;">
+            <canvas id="population-chart" data-url="{% url 'pulse-chart' object.id %}"></canvas>
+          </div>
+
+          <script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
+          <script src="https://cdn.jsdelivr.net/npm/chart.js@2.9.3/dist/Chart.min.js"></script>
+          <script>
+
+            $(function () {
+
+              var $populationChart = $("#population-chart");
+              var ctx = $populationChart[0].getContext("2d");
+
+                  new Chart(ctx, {
+                    type: 'bar',
+                    data: {
+                      labels: {{ labels|safe }},
+                      datasets: [{
+                        label: 'Population',
+                        backgroundColor: 'blue',
+                        data: {{ data|safe }}
+                      }]
+                    },
+                    options: {
+                      responsive: true,
+                      legend: {
+                        position: 'top',
+                      },
+                      title: {
+                        display: true,
+                        text: 'Population Bar Chart'
+                      }
+                    }
+                  });
+
+            });
+
+          </script>
+
       </div>
 </div>
 
