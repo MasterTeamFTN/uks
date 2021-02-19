@@ -5,6 +5,7 @@ from ..tasks.models import Task
 from django.urls import reverse_lazy
 from django.views.generic import DetailView, CreateView, UpdateView, DeleteView
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
+from django.shortcuts import get_object_or_404, render
 
 
 class MilestoneCreateView(LoginRequiredMixin, UserPassesTestMixin, CreateView):
@@ -19,7 +20,7 @@ class MilestoneCreateView(LoginRequiredMixin, UserPassesTestMixin, CreateView):
 
     def test_func(self):
         project_id = self.kwargs.get('project_pk')
-        project = Project.objects.get(pk=project_id)
+        project = get_object_or_404(Project, pk=project_id)
         return self.request.user in project.contributors.all()
 
 class MilestoneUpdateView(LoginRequiredMixin, UpdateView):
@@ -29,6 +30,10 @@ class MilestoneUpdateView(LoginRequiredMixin, UpdateView):
     def get_success_url(self):
         milestone = self.get_object()
         return reverse_lazy('milestone-list', kwargs={'project_pk': milestone.project.id})
+    def test_func(self):
+        project_id = self.kwargs.get('project_pk')
+        project = get_object_or_404(Project, pk=project_id)
+        return self.request.user in project.contributors.all()
 
 class MilestoneDeleteView(LoginRequiredMixin, DeleteView):
     template_name = 'app/milestone/milestone_confirm_delete.html'
@@ -37,6 +42,9 @@ class MilestoneDeleteView(LoginRequiredMixin, DeleteView):
     def get_success_url(self):
         milestone = self.get_object()
         return reverse_lazy('milestone-list', kwargs={'project_pk': milestone.project.id})
+    def test_func(self):
+        milestone = self.get_object()
+        return self.request.user in milestone.project.contributors.all()
 
 def milestone_detail_view(request, project_pk, pk):
     milestone = Milestone.objects.get(pk=pk)
@@ -61,8 +69,7 @@ def milestone_detail_view(request, project_pk, pk):
     return render(request, 'app/milestone/milestone_detail.html', context)
 
 def milestone_list_view(request, project_pk):
-    project = Project.objects.get(pk=project_pk)
-
+    project = get_object_or_404(Project, pk=project_pk)
     context = {
         'milestones': Milestone.objects.filter(project=project),
         'project': project
